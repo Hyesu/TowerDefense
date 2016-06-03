@@ -1,25 +1,4 @@
-#include <d3d9.h>
-#pragma warning( disable : 4996 ) // disable deprecated warning 
-#include <strsafe.h>
-#pragma warning( default : 4996 )
-
-
-//-----------------------------------------------------------------------------
-// Constants
-//-----------------------------------------------------------------------------
-#define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
-#define TD_WINDOW_TITLE			(L"Tower Defense")
-
-
-
-
-//-----------------------------------------------------------------------------
-// Global variables
-//-----------------------------------------------------------------------------
-LPDIRECT3D9         g_pD3D = NULL; // Used to create the D3DDevice
-LPDIRECT3DDEVICE9   g_pd3dDevice = NULL; // Our rendering device
-
-
+#include "TDGlobal.h"
 
 
 //-----------------------------------------------------------------------------
@@ -70,6 +49,15 @@ VOID Cleanup()
 
 
 
+//-----------------------------------------------------------------------------
+// Name: InitWorld()
+// Desc: Init World and render it
+//-----------------------------------------------------------------------------
+VOID InitWorld()
+{
+	
+}
+
 
 //-----------------------------------------------------------------------------
 // Name: Render()
@@ -87,7 +75,7 @@ VOID Render()
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
 		// Rendering of scene objects can happen here
-
+		InitWorld();
 
 
 
@@ -148,7 +136,8 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 
 	// Create the application's window
 	HWND hWnd = CreateWindow(TD_WINDOW_TITLE, TD_WINDOW_TITLE,
-		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		WS_OVERLAPPEDWINDOW, 
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		NULL, NULL, wc.hInstance, NULL);
 
 	// Initialize Direct3D
