@@ -12,7 +12,8 @@
 #define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
 #define TD_WINDOW_TITLE			(L"Tower Defense")
 
-
+#define TD_NUM_VERTICES			8	// cube vertices
+#define TD_NUM_INDICES			36	// cube indices
 
 
 //-----------------------------------------------------------------------------

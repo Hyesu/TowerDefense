@@ -32,6 +32,26 @@ HRESULT InitD3D(HWND hWnd)
 }
 
 
+VOID InitVertexBuffer()
+{
+	g_pd3dDevice->CreateVertexBuffer(
+		TD_NUM_VERTICES * sizeof(Vertex),
+		D3DUSAGE_WRITEONLY,
+		Vertex::FVF,
+		D3DPOOL_MANAGED,
+		&g_pVertexBuffer,
+		0);
+}
+VOID InitIndexBuffer()
+{
+	g_pd3dDevice->CreateIndexBuffer(
+		TD_NUM_INDICES * sizeof(WORD),
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_MANAGED,
+		&g_pIndexBuffer,
+		0);
+}
 
 
 //-----------------------------------------------------------------------------
@@ -143,6 +163,10 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 	// Initialize Direct3D
 	if (SUCCEEDED(InitD3D(hWnd)))
 	{
+		// Get Vertex Buffer and Index Buffer
+		InitVertexBuffer();
+		InitIndexBuffer();
+
 		// Show the window
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
