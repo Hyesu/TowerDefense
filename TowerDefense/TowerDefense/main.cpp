@@ -1,4 +1,5 @@
 #include "TDGlobal.h"
+#include "TDObject.h"
 
 
 //-----------------------------------------------------------------------------
@@ -32,15 +33,18 @@ HRESULT InitD3D(HWND hWnd)
 }
 
 
-VOID InitVertexBuffer()
+HRESULT InitVertexBuffer()
 {
-	g_pd3dDevice->CreateVertexBuffer(
+	if (FAILED(g_pd3dDevice->CreateVertexBuffer(
 		TD_NUM_VERTICES * sizeof(Vertex),
 		D3DUSAGE_WRITEONLY,
 		Vertex::FVF,
 		D3DPOOL_MANAGED,
 		&g_pVertexBuffer,
-		0);
+		0)))
+		return E_FAIL;
+	else
+		return S_OK;
 }
 VOID InitIndexBuffer()
 {
@@ -81,16 +85,16 @@ VOID InitCamera()
 //-----------------------------------------------------------------------------
 VOID Cleanup()
 {
-	if (g_pd3dDevice != NULL)
+	if (g_pd3dDevice != nullptr)
 		g_pd3dDevice->Release();
 
-	if (g_pD3D != NULL)
+	if (g_pD3D != nullptr)
 		g_pD3D->Release();
 
-	if (g_pVertexBuffer != NULL)
+	if (g_pVertexBuffer != nullptr)
 		g_pVertexBuffer->Release();
 
-	if (g_pIndexBuffer != NULL)
+	if (g_pIndexBuffer != nullptr)
 		g_pIndexBuffer->Release();
 }
 
@@ -122,7 +126,13 @@ VOID Render()
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
 		// Rendering of scene objects can happen here
-		InitWorld();
+		// debug
+		TDObject cube();
+
+		g_pd3dDevice->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(Vertex));
+		g_pd3dDevice->SetIndices(g_pIndexBuffer);
+		g_pd3dDevice->SetFVF(Vertex::FVF);
+		g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 
 
 

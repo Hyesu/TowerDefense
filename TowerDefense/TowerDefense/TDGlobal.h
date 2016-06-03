@@ -25,6 +25,11 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
+#define TD_COLOR_TILE			0Xff0000ff
+
+
+
+
 //-----------------------------------------------------------------------------
 // Global variables
 //-----------------------------------------------------------------------------
@@ -40,10 +45,14 @@ extern IDirect3DIndexBuffer9*  g_pIndexBuffer;
 //-----------------------------------------------------------------------------
 struct Vertex {
 	Vertex() {}
-	Vertex(float x, float y, float z) {
+	Vertex(float x, float y, float z, DWORD color) {
 		_x = x, _y = y, _z = z;
+
+		_w = 1.0f;
+		_color = color;
 	}
 
-	float _x, _y, _z;
+	float _x, _y, _z, _w;
+	DWORD _color;
 	static const DWORD FVF;
 };
