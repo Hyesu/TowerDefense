@@ -52,6 +52,27 @@ VOID InitIndexBuffer()
 		&g_pIndexBuffer,
 		0);
 }
+VOID InitCamera()
+{
+	// set view space
+	D3DXVECTOR3 cameraPosition = TD_CAMERA_POSITION;
+	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
+	D3DXVECTOR3 upVector = TD_WORLD_UP_VECTOR;
+
+	D3DXMATRIX viewMatrix;
+	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &targetPosition, &upVector);
+	g_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
+
+	// set projection
+	D3DXMATRIX projectionMatrix;
+	D3DXMatrixPerspectiveLH(&projectionMatrix,
+		TD_PROJECTION_ANGLE,
+		(float)TD_WINDOW_WIDTH / (float)TD_WINDOW_HEIGHT,
+		TD_PROJECTION_NEAR,
+		TD_PROJECTION_FAR);
+	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &projectionMatrix);
+	g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+}
 
 
 //-----------------------------------------------------------------------------
@@ -65,6 +86,12 @@ VOID Cleanup()
 
 	if (g_pD3D != NULL)
 		g_pD3D->Release();
+
+	if (g_pVertexBuffer != NULL)
+		g_pVertexBuffer->Release();
+
+	if (g_pIndexBuffer != NULL)
+		g_pIndexBuffer->Release();
 }
 
 
@@ -157,7 +184,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 	// Create the application's window
 	HWND hWnd = CreateWindow(TD_WINDOW_TITLE, TD_WINDOW_TITLE,
 		WS_OVERLAPPEDWINDOW, 
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT, TD_WINDOW_WIDTH, TD_WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL);
 
 	// Initialize Direct3D
@@ -166,6 +193,9 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 		// Get Vertex Buffer and Index Buffer
 		InitVertexBuffer();
 		InitIndexBuffer();
+
+		// Set Camera
+		InitCamera();
 
 		// Show the window
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
