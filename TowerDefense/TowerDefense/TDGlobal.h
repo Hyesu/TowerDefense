@@ -6,9 +6,10 @@
 #pragma warning( default : 4996 )
 #include <d3dx9.h>
 
-//-----------------------------------------------------------------------------
-// Constants
-//-----------------------------------------------------------------------------
+namespace TD {
+	//-----------------------------------------------------------------------------
+	// Constants
+	//-----------------------------------------------------------------------------
 #define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
 #define TD_WINDOW_TITLE			(L"Tower Defense")
 #define TD_WINDOW_WIDTH			640.0f
@@ -33,10 +34,10 @@
 //-----------------------------------------------------------------------------
 // Global variables
 //-----------------------------------------------------------------------------
-extern LPDIRECT3D9         g_pD3D; // Used to create the D3DDevice
-extern LPDIRECT3DDEVICE9   g_pd3dDevice; // Our rendering device
-extern IDirect3DVertexBuffer9* g_pVertexBuffer;
-extern IDirect3DIndexBuffer9*  g_pIndexBuffer;
+	extern LPDIRECT3D9         g_pD3D; // Used to create the D3DDevice
+	extern LPDIRECT3DDEVICE9   g_pd3dDevice; // Our rendering device
+	extern IDirect3DVertexBuffer9* g_pVertexBuffer;
+	extern IDirect3DIndexBuffer9*  g_pIndexBuffer;
 
 
 
@@ -47,12 +48,23 @@ struct Vertex {
 	Vertex() {}
 	Vertex(float x, float y, float z, DWORD color) {
 		_x = x, _y = y, _z = z;
-
-		_w = 1.0f;
 		_color = color;
 	}
 
-	float _x, _y, _z, _w;
-	DWORD _color;
+	float _x, _y, _z;
+	DWORD _color; // 32bit color:ARGB
 	static const DWORD FVF;
 };
+
+
+//-----------------------------------------------------------------------------
+// Global Functions
+//-----------------------------------------------------------------------------
+HRESULT InitD3D(HWND hWnd);
+VOID Cleanup();
+VOID Render();
+LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+HRESULT InitVertexBuffer();
+HRESULT InitIndexBuffer();
+}
