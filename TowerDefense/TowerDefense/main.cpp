@@ -1,28 +1,6 @@
 #include "TDGlobal.h"
 #include "TDObject.h"
 
-VOID InitCamera()
-{
-	// set view space
-	D3DXVECTOR3 cameraPosition = TD_CAMERA_POSITION;
-	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
-	D3DXVECTOR3 upVector = TD_WORLD_UP_VECTOR;
-
-	D3DXMATRIX viewMatrix;
-	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &targetPosition, &upVector);
-	TD::g_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
-
-	// set projection
-	D3DXMATRIX projectionMatrix;
-	D3DXMatrixPerspectiveLH(&projectionMatrix,
-		TD_PROJECTION_ANGLE,
-		(float)TD_WINDOW_WIDTH / (float)TD_WINDOW_HEIGHT,
-		TD_PROJECTION_NEAR,
-		TD_PROJECTION_FAR);
-	TD::g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &projectionMatrix);
-	TD::g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-}
-
 //-----------------------------------------------------------------------------
 // Name: wWinMain()
 // Desc: The application's entry point
@@ -49,6 +27,9 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 	// Initialize Direct3D
 	if (SUCCEEDED(TD::InitD3D(hWnd)))
 	{
+		// Setup
+		SetUp();
+
 		// Show the window
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);

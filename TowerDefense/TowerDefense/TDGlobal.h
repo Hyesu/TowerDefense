@@ -7,18 +7,19 @@
 #include <d3dx9.h>
 
 namespace TD {
-	//-----------------------------------------------------------------------------
-	// Constants
-	//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Constants
+//-----------------------------------------------------------------------------
 #define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
 #define TD_WINDOW_TITLE			(L"Tower Defense")
-#define TD_WINDOW_WIDTH			640.0f
-#define TD_WINDOW_HEIGHT		480.0f
+#define TD_WINDOW_WIDTH			600
+#define TD_WINDOW_HEIGHT		600
 
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
 
-#define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 0.0f, -5.0f)
+#define TD_CAMERA_POSITION		D3DXVECTOR3(5.0f, 5.0f, -5.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
 #define TD_WORLD_UP_VECTOR		D3DXVECTOR3(0.0f, 1.0f,  0.0f)
 
@@ -26,7 +27,7 @@ namespace TD {
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-#define TD_COLOR_TILE			0Xff0000ff
+#define TD_COLOR_TILE			D3DCOLOR_XRGB(0, 0, 255)
 
 
 
@@ -52,7 +53,7 @@ struct Vertex {
 	}
 
 	float _x, _y, _z;
-	DWORD _color; // 32bit color:ARGB
+	D3DCOLOR _color; // 32bit color:ARGB
 	static const DWORD FVF;
 };
 
@@ -65,6 +66,10 @@ VOID Cleanup();
 VOID Render();
 LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+HRESULT SetUp();
 HRESULT InitVertexBuffer();
 HRESULT InitIndexBuffer();
+HRESULT InitCamera();
+
 }
+using namespace TD;
