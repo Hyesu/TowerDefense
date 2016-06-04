@@ -1,10 +1,22 @@
-#include "TDGlobal.h"
-#include "TDObject.h"
+#include "TowerDefense.h"
 
-//-----------------------------------------------------------------------------
-// Name: wWinMain()
-// Desc: The application's entry point
-//-----------------------------------------------------------------------------
+LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		TowerDefense::getInstance()->Cleanup();
+		PostQuitMessage(0);
+		return 0;
+
+	case WM_PAINT:
+		TowerDefense::getInstance()->Render();
+		ValidateRect(hWnd, NULL);
+		return 0;
+	}
+
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
 INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 {
 	UNREFERENCED_PARAMETER(hInst);
@@ -12,7 +24,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 	// Register the window class
 	WNDCLASSEX wc =
 	{
-		sizeof(WNDCLASSEX), CS_CLASSDC, TD::MsgProc, 0L, 0L,
+		sizeof(WNDCLASSEX), CS_CLASSDC, MsgProc, 0L, 0L,
 		GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
 		TD_WINDOW_TITLE, NULL
 	};
@@ -24,11 +36,12 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 		CW_USEDEFAULT, CW_USEDEFAULT, TD_WINDOW_WIDTH, TD_WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL);
 
+	TowerDefense* pTD = TowerDefense::getInstance();
 	// Initialize Direct3D
-	if (SUCCEEDED(TD::InitD3D(hWnd)))
+	if (SUCCEEDED(pTD->InitD3D(hWnd)))
 	{
 		// Setup
-		SetUp();
+		pTD->SetUp();
 
 		// Show the window
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
