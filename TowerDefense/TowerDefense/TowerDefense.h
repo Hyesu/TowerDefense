@@ -7,6 +7,8 @@
 #pragma warning( default : 4996 )
 #include <d3dx9.h>
 
+#include "TDMap.h"
+
 //-----------------------------------------------------------------------------
 // Constants
 //-----------------------------------------------------------------------------
@@ -26,15 +28,8 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-// for tile maps
-#define TD_NUM_TILE_ROW			5
-#define TD_NUM_TILE_COL			(TD_NUM_TILE_ROW)
-#define TD_TILE_X				((float) (TD_NUM_TILE_ROW * -1))
-#define TD_TILE_Y				(TD_TILE_X)
-#define TD_TILE_Z				0.0f
-
 // for object
-#define TD_OBJECT_Y				(TD_TILE_Y + 1.0f)
+#define TD_OBJECT_Y				(-5.0f + 1.0f)
 
 // init game and handle direct3D
 class TowerDefense
@@ -52,6 +47,8 @@ private:
 	IDirect3DVertexBuffer9* _pVertexBuffer;
 	IDirect3DIndexBuffer9*  _pIndexBuffer;
 
+	TDMap* _pMap;
+
 	struct Vertex {
 		Vertex() {}
 		Vertex(float x, float y, float z, DWORD color) {
@@ -66,7 +63,7 @@ private:
 
 
 	VOID init();
-	HRESULT initVertexBuffer(int nObjectType);
+	HRESULT initVertexBuffer(D3DCOLOR color);
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
 

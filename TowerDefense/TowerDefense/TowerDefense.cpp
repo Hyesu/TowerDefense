@@ -15,6 +15,8 @@ VOID TowerDefense::init() {
 
 	_pVertexBuffer = nullptr;
 	_pIndexBuffer = nullptr;	
+
+	_pMap = new TDMap();
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -63,6 +65,9 @@ VOID TowerDefense::Cleanup() {
 
 	if (_pIndexBuffer != nullptr)
 		_pIndexBuffer->Release();
+
+	if (_pMap != nullptr)
+		delete _pMap;
 }
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
@@ -100,7 +105,7 @@ HRESULT TowerDefense::SetUp() {
 	}
 	return S_OK;
 }
-HRESULT TowerDefense::initVertexBuffer(int nObjectType) {
+HRESULT TowerDefense::initVertexBuffer(D3DCOLOR color) {
 	// create vertex buffer
 	if (FAILED(_pd3dDevice->CreateVertexBuffer(
 		TD_NUM_VERTICES * sizeof(Vertex),
@@ -116,16 +121,16 @@ HRESULT TowerDefense::initVertexBuffer(int nObjectType) {
 	_pVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
 
 	// front face
-	pVertices[0] = Vertex(-0.5f, 0.5f, -0.5f, _pColorList[nObjectType]);
-	pVertices[1] = Vertex(0.5f, 0.5f, -0.5f, _pColorList[nObjectType]);
-	pVertices[2] = Vertex(-0.5f, -0.5f, -0.5f, _pColorList[nObjectType]);
-	pVertices[3] = Vertex(0.5f, -0.5f, -0.5f, _pColorList[nObjectType]);
+	pVertices[0] = Vertex(-0.5f, 0.5f, -0.5f, color);
+	pVertices[1] = Vertex(0.5f, 0.5f, -0.5f, color);
+	pVertices[2] = Vertex(-0.5f, -0.5f, -0.5f, color);
+	pVertices[3] = Vertex(0.5f, -0.5f, -0.5f, color);
 
 	// back face
-	pVertices[4] = Vertex(-0.5f, 0.5f, 0.5f, _pColorList[nObjectType]);
-	pVertices[5] = Vertex(0.5f, 0.5f, 0.5f, _pColorList[nObjectType]);
-	pVertices[6] = Vertex(-0.5f, -0.5f, 0.5f, _pColorList[nObjectType]);
-	pVertices[7] = Vertex(0.5f, -0.5f, 0.5f, _pColorList[nObjectType]);
+	pVertices[4] = Vertex(-0.5f, 0.5f, 0.5f, color);
+	pVertices[5] = Vertex(0.5f, 0.5f, 0.5f, color);
+	pVertices[6] = Vertex(-0.5f, -0.5f, 0.5f, color);
+	pVertices[7] = Vertex(0.5f, -0.5f, 0.5f, color);
 
 	_pVertexBuffer->Unlock();
 
@@ -202,26 +207,29 @@ VOID TowerDefense::Finalize() {
 }
 
 VOID TowerDefense::drawMap() {
-	initVertexBuffer(TD_OBJECT_TILE);
+	long nRed = _pMap->getRed(), nGreen = _pMap->getGreen(), nBlue = _pMap->getBlue();
+	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 
 	D3DXMATRIX worldMatrix;
-	for (int i = 0; i < TD_NUM_TILE_ROW * TD_NUM_TILE_COL; i++) {
-		D3DXMatrixTranslation(&worldMatrix, TD_TILE_X + i % TD_NUM_TILE_COL , 
-											TD_TILE_Y,
-											TD_TILE_Z + i / TD_NUM_TILE_ROW);
+	int nRow = _pMap->getNumRow(), nCol = _pMap->getNumCol();
+	float x = _pMap->getPosX(), y = _pMap->getPosY(), z = _pMap->getPosZ();
+	for (int i = 0; i < nRow * nCol; i++) {
+		D3DXMatrixTranslation(&worldMatrix, x + i % nCol , 
+											y,
+											z + i / nRow);
 		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
 
 		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 	}
 }
 VOID TowerDefense::drawPortal() {
-	initVertexBuffer(TD_OBJECT_PORTAL);
+	/*initVertexBuffer(TD_OBJECT_PORTAL);
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 
 	D3DXMATRIX worldMatrix;
 	D3DXMatrixTranslation(&worldMatrix, TD_TILE_X, TD_OBJECT_Y, TD_TILE_Z);
 	_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
 
-	_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
+	_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);*/
 }
