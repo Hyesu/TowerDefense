@@ -4,22 +4,21 @@
 
 TDObject::TDObject() {
 	_nRed = _nGreen = _nBlue = 0;
-	_fPosX = _fPosY = _fPosZ = 0.0f;
 	_nNumCube = 0;
+	_pPosList = nullptr;
 }
 void TDObject::init(int nRed, int nGreen, int nBlue,
 	float fPosX, float fPosY, float fPosZ, int nNumCube) {
 	// set tile color
 	_nRed = nRed;
-	_nGreen = nBlue;
-	_nBlue = nGreen;
-
-	// set position of tile
-	_fPosX = fPosX;
-	_fPosY = fPosY;
-	_fPosZ = fPosZ;
-
+	_nGreen = nGreen;
+	_nBlue = nBlue;
+	
 	_nNumCube = nNumCube;
+	_pPosList = new vector<Position>();
+
+	// set position of first tile
+	_pPosList->push_back(Position(fPosX, fPosY, fPosZ));
 }
 
 // getter
@@ -37,12 +36,21 @@ int TDObject::getNumCube() const {
 	return _nNumCube;
 }
 
-float TDObject::getPosX() const {
-	return _fPosX;
+float TDObject::getPosX(int nIndex) const {
+	if (_pPosList != nullptr)
+		return _pPosList->at(nIndex)._x;
+	else
+		return 0.0f;
 }
-float TDObject::getPosY() const {
-	return _fPosY;
+float TDObject::getPosY(int nIndex) const {
+	if (_pPosList != nullptr)
+		return _pPosList->at(nIndex)._y;
+	else 
+		return 0.0f;
 }
-float TDObject::getPosZ() const {
-	return _fPosZ;
+float TDObject::getPosZ(int nIndex) const {
+	if (_pPosList != nullptr)
+		return _pPosList->at(nIndex)._z;
+	else
+		return 0.0f;
 }

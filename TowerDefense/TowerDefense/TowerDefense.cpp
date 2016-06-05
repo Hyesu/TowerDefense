@@ -1,10 +1,6 @@
 #include "TowerDefense.h"
 TowerDefense* TowerDefense::_pInstance = nullptr;
 const DWORD TowerDefense::Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
-const D3DXCOLOR TowerDefense::_pColorList[] = {
-	D3DCOLOR_XRGB(64, 64, 64),
-	D3DCOLOR_XRGB(0, 255, 0)
-};
 
 TowerDefense::TowerDefense() {
 	init();
@@ -17,6 +13,7 @@ VOID TowerDefense::init() {
 	_pIndexBuffer = nullptr;	
 
 	_pMap = new TDMap();
+	_pPortal = new TDPortal(_pMap->getPosX(), _pMap->getPosY(), _pMap->getPosZ());
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -68,6 +65,9 @@ VOID TowerDefense::Cleanup() {
 
 	if (_pMap != nullptr)
 		delete _pMap;
+
+	if (_pPortal != nullptr)
+		delete _pPortal;
 }
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
@@ -82,8 +82,8 @@ VOID TowerDefense::Render() {
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
-		drawMap();
-		drawPortal();
+		drawObject(_pMap);
+		drawObject(_pPortal);
 
 		// End the scene
 		_pd3dDevice->EndScene();
@@ -206,28 +206,39 @@ VOID TowerDefense::Finalize() {
 	Cleanup();
 }
 
+VOID TowerDefense::drawObject(TDObject* pObject) {
+	int nRed = pObject->getRed(), nGreen = pObject->getGreen(), nBlue = pObject->getBlue();
+	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
+	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
+
+	D3DXMATRIX worldMatrix;
+	for (int i = 0; i < pObject->getNumCube(); i++) {
+		D3DXMatrixTranslation(&worldMatrix, pObject->getPosX(i), pObject->getPosY(i), pObject->getPosZ(i));
+		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
+
+		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
+	}
+}
 VOID TowerDefense::drawMap() {
 	int nRed = _pMap->getRed(), nGreen = _pMap->getGreen(), nBlue = _pMap->getBlue();
 	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 
 	D3DXMATRIX worldMatrix;
-	int nRow = _pMap->getNumRow(), nCol = _pMap->getNumCol();
-	float x = _pMap->getPosX(), y = _pMap->getPosY(), z = _pMap->getPosZ();
-	for (int i = 0; i < nRow * nCol; i++) {
-		D3DXMatrixTranslation(&worldMatrix, x + i % nCol , 
-											y,
-											z + i / nRow);
+	for (int i = 0; i < _pMap->getNumCube(); i++) {
+		D3DXMatrixTranslation(&worldMatrix, _pMap->getPosX(i), _pMap->getPosY(i), _pMap->getPosZ(i));
 		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
 
 		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 	}
 }
 VOID TowerDefense::drawPortal() {
-	/*initVertexBuffer(TD_OBJECT_PORTAL);
+	/*int nRed = _pPortal->getRed(), nGreen = _pPortal->getGreen(), nBlue = _pPortal->getBlue();
+	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 
 	D3DXMATRIX worldMatrix;
+	float x = _pMap->getPosX(), y = _pMap->getPosY(), z = _pMap->getPosZ();
 	D3DXMatrixTranslation(&worldMatrix, TD_TILE_X, TD_OBJECT_Y, TD_TILE_Z);
 	_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
 

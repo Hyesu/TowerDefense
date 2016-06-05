@@ -8,6 +8,7 @@
 #include <d3dx9.h>
 
 #include "TDMap.h"
+#include "TDPortal.h"
 
 //-----------------------------------------------------------------------------
 // Constants
@@ -35,10 +36,6 @@ class TowerDefense
 private:
 	static TowerDefense* _pInstance;
 	static const D3DXCOLOR _pColorList[];
-	static const enum TD_OBJECT_TYPE {
-		TD_OBJECT_TILE = 0,
-		TD_OBJECT_PORTAL = 1
-	};
 
 	LPDIRECT3D9				_pD3D;			// Used to create the D3DDevice
 	LPDIRECT3DDEVICE9		_pd3dDevice;	// Our rendering device
@@ -46,6 +43,7 @@ private:
 	IDirect3DIndexBuffer9*  _pIndexBuffer;
 
 	TDMap* _pMap;
+	TDPortal* _pPortal;
 
 	struct Vertex {
 		Vertex() {}
@@ -65,6 +63,7 @@ private:
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
 
+	VOID drawObject(TDObject* pObject);
 	VOID drawMap();
 	VOID drawPortal();
 	

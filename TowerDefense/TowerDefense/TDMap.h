@@ -15,6 +15,8 @@ class TDMap : public TDObject{
 private:
 	int _nNumRow, _nNumCol;			// number of tiles
 
+	void initPosition();
+
 public:
 	TDMap();
 
