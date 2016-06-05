@@ -116,16 +116,16 @@ HRESULT TowerDefense::initVertexBuffer(int nObjectType) {
 	_pVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
 
 	// front face
-	pVertices[0] = Vertex(-1.0f, 1.0f, -1.0f, _pColorList[nObjectType]);
-	pVertices[1] = Vertex(1.0f, 1.0f, -1.0f, _pColorList[nObjectType]);
-	pVertices[2] = Vertex(-1.0f, -1.0f, -1.0f, _pColorList[nObjectType]);
-	pVertices[3] = Vertex(1.0f, -1.0f, -1.0f, _pColorList[nObjectType]);
+	pVertices[0] = Vertex(-0.5f, 0.5f, -0.5f, _pColorList[nObjectType]);
+	pVertices[1] = Vertex(0.5f, 0.5f, -0.5f, _pColorList[nObjectType]);
+	pVertices[2] = Vertex(-0.5f, -0.5f, -0.5f, _pColorList[nObjectType]);
+	pVertices[3] = Vertex(0.5f, -0.5f, -0.5f, _pColorList[nObjectType]);
 
 	// back face
-	pVertices[4] = Vertex(-1.0f, 1.0f, 1.0f, _pColorList[nObjectType]);
-	pVertices[5] = Vertex(1.0f, 1.0f, 1.0f, _pColorList[nObjectType]);
-	pVertices[6] = Vertex(-1.0f, -1.0f, 1.0f, _pColorList[nObjectType]);
-	pVertices[7] = Vertex(1.0f, -1.0f, 1.0f, _pColorList[nObjectType]);
+	pVertices[4] = Vertex(-0.5f, 0.5f, 0.5f, _pColorList[nObjectType]);
+	pVertices[5] = Vertex(0.5f, 0.5f, 0.5f, _pColorList[nObjectType]);
+	pVertices[6] = Vertex(-0.5f, -0.5f, 0.5f, _pColorList[nObjectType]);
+	pVertices[7] = Vertex(0.5f, -0.5f, 0.5f, _pColorList[nObjectType]);
 
 	_pVertexBuffer->Unlock();
 
