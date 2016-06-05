@@ -18,7 +18,7 @@
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
 
-#define TD_CAMERA_POSITION		D3DXVECTOR3(5.0f, 5.0f, -5.0f)
+#define TD_CAMERA_POSITION		D3DXVECTOR3(15.0f, 15.0f, -5.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
 #define TD_WORLD_UP_VECTOR		D3DXVECTOR3(0.0f, 1.0f,  0.0f)
 
@@ -26,7 +26,7 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-#define TD_COLOR_TILE			D3DCOLOR_XRGB(0, 0, 255)
+#define TD_COLOR_TILE			D3DCOLOR_XRGB(64, 64, 64)
 
 class TowerDefense
 {
