@@ -13,8 +13,7 @@ VOID TowerDefense::init() {
 	_pIndexBuffer = nullptr;	
 }
 
-HRESULT TowerDefense::InitD3D(HWND hWnd)
-{
+HRESULT TowerDefense::InitD3D(HWND hWnd) {
 	// Create the D3D object, which is needed to create the D3DDevice.
 	if (NULL == (_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
 		return E_FAIL;
@@ -40,8 +39,7 @@ HRESULT TowerDefense::InitD3D(HWND hWnd)
 	// Create the Direct3D device.
 	if (FAILED(_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
 		nVertexProcessingType,
-		&d3dpp, &_pd3dDevice)))
-	{
+		&d3dpp, &_pd3dDevice)))	{
 		return E_FAIL;
 	}
 
@@ -49,8 +47,7 @@ HRESULT TowerDefense::InitD3D(HWND hWnd)
 
 	return S_OK;
 }
-VOID TowerDefense::Cleanup()
-{
+VOID TowerDefense::Cleanup() {
 	if (_pd3dDevice != nullptr)
 		_pd3dDevice->Release();
 
@@ -63,8 +60,7 @@ VOID TowerDefense::Cleanup()
 	if (_pIndexBuffer != nullptr)
 		_pIndexBuffer->Release();
 }
-VOID TowerDefense::Render()
-{
+VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
 		return;
 
@@ -72,14 +68,13 @@ VOID TowerDefense::Render()
 	_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, TD_BACKGROUND_COLOR, 1.0f, 0);
 
 	// Begin the scene
-	if (SUCCEEDED(_pd3dDevice->BeginScene()))
-	{
+	if (SUCCEEDED(_pd3dDevice->BeginScene())) 	{
 		// Rendering of scene objects can happen here
 		_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
-		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
+		drawMap();
 
 		// End the scene
 		_pd3dDevice->EndScene();
@@ -89,8 +84,7 @@ VOID TowerDefense::Render()
 	_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 }
 
-HRESULT TowerDefense::SetUp()
-{
+HRESULT TowerDefense::SetUp() {
 	if (FAILED(initVertexBuffer())) {
 		MessageBox(0, L"InitVertexBuffer Failed", 0, 0);
 		return E_FAIL;
@@ -106,8 +100,7 @@ HRESULT TowerDefense::SetUp()
 	}
 	return S_OK;
 }
-HRESULT TowerDefense::initVertexBuffer()
-{
+HRESULT TowerDefense::initVertexBuffer() {
 	// create vertex buffer
 	if (FAILED(_pd3dDevice->CreateVertexBuffer(
 		TD_NUM_VERTICES * sizeof(Vertex),
@@ -138,8 +131,7 @@ HRESULT TowerDefense::initVertexBuffer()
 
 	return S_OK;
 }
-HRESULT TowerDefense::initIndexBuffer()
-{
+HRESULT TowerDefense::initIndexBuffer() {
 	// create index buffer
 	if (FAILED(_pd3dDevice->CreateIndexBuffer(
 		TD_NUM_INDICES * sizeof(WORD),
@@ -182,8 +174,7 @@ HRESULT TowerDefense::initIndexBuffer()
 
 	return S_OK;
 }
-HRESULT TowerDefense::initCamera()
-{
+HRESULT TowerDefense::initCamera() {
 	// set view space
 	D3DXVECTOR3 cameraPosition = TD_CAMERA_POSITION;
 	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
@@ -208,4 +199,16 @@ HRESULT TowerDefense::initCamera()
 
 VOID TowerDefense::Finalize() {
 	Cleanup();
+}
+
+VOID TowerDefense::drawMap() {
+	D3DXMATRIX worldMatrix;
+	for (int i = 0; i < TD_NUM_TILE_ROW * TD_NUM_TILE_COL; i++) {
+		D3DXMatrixTranslation(&worldMatrix, TD_TILE_START_X + i % TD_NUM_TILE_COL , 
+											TD_TILE_START_Y,
+											TD_TILE_START_Z + i / TD_NUM_TILE_ROW);
+		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
+
+		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
+	}
 }

@@ -1,7 +1,6 @@
 #include "TowerDefense.h"
 
-LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg)
 	{
 	case WM_DESTROY:
@@ -17,13 +16,11 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
-{
+INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT) {
 	UNREFERENCED_PARAMETER(hInst);
 
 	// Register the window class
-	WNDCLASSEX wc =
-	{
+	WNDCLASSEX wc =	{
 		sizeof(WNDCLASSEX), CS_CLASSDC, MsgProc, 0L, 0L,
 		GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
 		TD_WINDOW_TITLE, NULL

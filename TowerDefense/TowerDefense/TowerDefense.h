@@ -18,16 +18,24 @@
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
 
-#define TD_CAMERA_POSITION		D3DXVECTOR3(15.0f, 15.0f, -5.0f)
+#define TD_CAMERA_POSITION		D3DXVECTOR3(5.0f, 5.0f, -5.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
 #define TD_WORLD_UP_VECTOR		D3DXVECTOR3(0.0f, 1.0f,  0.0f)
 
-#define TD_PROJECTION_ANGLE		D3DX_PI * 0.5f
+#define TD_PROJECTION_ANGLE		D3DX_PI * 0.25f
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
 #define TD_COLOR_TILE			D3DCOLOR_XRGB(64, 64, 64)
 
+// for tile maps
+#define TD_NUM_TILE_ROW			5
+#define TD_NUM_TILE_COL			(TD_NUM_TILE_ROW)
+#define TD_TILE_START_X			((float) (TD_NUM_TILE_ROW * -1))
+#define TD_TILE_START_Y			(TD_TILE_START_X)
+#define TD_TILE_START_Z			0.0f
+
+// init game and handle direct3D
 class TowerDefense
 {
 private:
@@ -55,6 +63,8 @@ private:
 	HRESULT initVertexBuffer();
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
+
+	VOID drawMap();
 	
 public:
 	TowerDefense();
