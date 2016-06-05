@@ -1,6 +1,10 @@
 #include "TowerDefense.h"
 TowerDefense* TowerDefense::_pInstance = nullptr;
 const DWORD TowerDefense::Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+const D3DXCOLOR TowerDefense::_pColorList[] = {
+	D3DCOLOR_XRGB(64, 64, 64),
+	D3DCOLOR_XRGB(0, 255, 0)
+};
 
 TowerDefense::TowerDefense() {
 	init();
@@ -70,11 +74,11 @@ VOID TowerDefense::Render() {
 	// Begin the scene
 	if (SUCCEEDED(_pd3dDevice->BeginScene())) 	{
 		// Rendering of scene objects can happen here
-		_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
 		drawMap();
+		drawPortal();
 
 		// End the scene
 		_pd3dDevice->EndScene();
@@ -85,10 +89,6 @@ VOID TowerDefense::Render() {
 }
 
 HRESULT TowerDefense::SetUp() {
-	if (FAILED(initVertexBuffer())) {
-		MessageBox(0, L"InitVertexBuffer Failed", 0, 0);
-		return E_FAIL;
-	}
 	if (FAILED(initIndexBuffer())) {
 		MessageBox(0, L"InitIndexBuffer Failed", 0, 0);
 		return E_FAIL;
@@ -100,7 +100,7 @@ HRESULT TowerDefense::SetUp() {
 	}
 	return S_OK;
 }
-HRESULT TowerDefense::initVertexBuffer() {
+HRESULT TowerDefense::initVertexBuffer(int nObjectType) {
 	// create vertex buffer
 	if (FAILED(_pd3dDevice->CreateVertexBuffer(
 		TD_NUM_VERTICES * sizeof(Vertex),
@@ -116,16 +116,16 @@ HRESULT TowerDefense::initVertexBuffer() {
 	_pVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
 
 	// front face
-	pVertices[0] = Vertex(-1.0f, 1.0f, -1.0f, TD_COLOR_TILE);
-	pVertices[1] = Vertex(1.0f, 1.0f, -1.0f, TD_COLOR_TILE);
-	pVertices[2] = Vertex(-1.0f, -1.0f, -1.0f, TD_COLOR_TILE);
-	pVertices[3] = Vertex(1.0f, -1.0f, -1.0f, TD_COLOR_TILE);
+	pVertices[0] = Vertex(-1.0f, 1.0f, -1.0f, _pColorList[nObjectType]);
+	pVertices[1] = Vertex(1.0f, 1.0f, -1.0f, _pColorList[nObjectType]);
+	pVertices[2] = Vertex(-1.0f, -1.0f, -1.0f, _pColorList[nObjectType]);
+	pVertices[3] = Vertex(1.0f, -1.0f, -1.0f, _pColorList[nObjectType]);
 
 	// back face
-	pVertices[4] = Vertex(-1.0f, 1.0f, 1.0f, TD_COLOR_TILE);
-	pVertices[5] = Vertex(1.0f, 1.0f, 1.0f, TD_COLOR_TILE);
-	pVertices[6] = Vertex(-1.0f, -1.0f, 1.0f, TD_COLOR_TILE);
-	pVertices[7] = Vertex(1.0f, -1.0f, 1.0f, TD_COLOR_TILE);
+	pVertices[4] = Vertex(-1.0f, 1.0f, 1.0f, _pColorList[nObjectType]);
+	pVertices[5] = Vertex(1.0f, 1.0f, 1.0f, _pColorList[nObjectType]);
+	pVertices[6] = Vertex(-1.0f, -1.0f, 1.0f, _pColorList[nObjectType]);
+	pVertices[7] = Vertex(1.0f, -1.0f, 1.0f, _pColorList[nObjectType]);
 
 	_pVertexBuffer->Unlock();
 
@@ -202,13 +202,26 @@ VOID TowerDefense::Finalize() {
 }
 
 VOID TowerDefense::drawMap() {
+	initVertexBuffer(TD_OBJECT_TILE);
+	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
+
 	D3DXMATRIX worldMatrix;
 	for (int i = 0; i < TD_NUM_TILE_ROW * TD_NUM_TILE_COL; i++) {
-		D3DXMatrixTranslation(&worldMatrix, TD_TILE_START_X + i % TD_NUM_TILE_COL , 
-											TD_TILE_START_Y,
-											TD_TILE_START_Z + i / TD_NUM_TILE_ROW);
+		D3DXMatrixTranslation(&worldMatrix, TD_TILE_X + i % TD_NUM_TILE_COL , 
+											TD_TILE_Y,
+											TD_TILE_Z + i / TD_NUM_TILE_ROW);
 		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
 
 		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 	}
+}
+VOID TowerDefense::drawPortal() {
+	initVertexBuffer(TD_OBJECT_PORTAL);
+	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
+
+	D3DXMATRIX worldMatrix;
+	D3DXMatrixTranslation(&worldMatrix, TD_TILE_X, TD_OBJECT_Y, TD_TILE_Z);
+	_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
+
+	_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 }

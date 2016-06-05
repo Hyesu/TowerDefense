@@ -26,20 +26,26 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-#define TD_COLOR_TILE			D3DCOLOR_XRGB(64, 64, 64)
-
 // for tile maps
 #define TD_NUM_TILE_ROW			5
 #define TD_NUM_TILE_COL			(TD_NUM_TILE_ROW)
-#define TD_TILE_START_X			((float) (TD_NUM_TILE_ROW * -1))
-#define TD_TILE_START_Y			(TD_TILE_START_X)
-#define TD_TILE_START_Z			0.0f
+#define TD_TILE_X				((float) (TD_NUM_TILE_ROW * -1))
+#define TD_TILE_Y				(TD_TILE_X)
+#define TD_TILE_Z				0.0f
+
+// for object
+#define TD_OBJECT_Y				(TD_TILE_Y + 1.0f)
 
 // init game and handle direct3D
 class TowerDefense
 {
 private:
 	static TowerDefense* _pInstance;
+	static const D3DXCOLOR _pColorList[];
+	static const enum TD_OBJECT_TYPE {
+		TD_OBJECT_TILE = 0,
+		TD_OBJECT_PORTAL = 1
+	};
 
 	LPDIRECT3D9				_pD3D;			// Used to create the D3DDevice
 	LPDIRECT3DDEVICE9		_pd3dDevice;	// Our rendering device
@@ -60,11 +66,12 @@ private:
 
 
 	VOID init();
-	HRESULT initVertexBuffer();
+	HRESULT initVertexBuffer(int nObjectType);
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
 
 	VOID drawMap();
+	VOID drawPortal();
 	
 public:
 	TowerDefense();
