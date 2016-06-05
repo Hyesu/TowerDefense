@@ -207,7 +207,7 @@ VOID TowerDefense::Finalize() {
 }
 
 VOID TowerDefense::drawMap() {
-	long nRed = _pMap->getRed(), nGreen = _pMap->getGreen(), nBlue = _pMap->getBlue();
+	int nRed = _pMap->getRed(), nGreen = _pMap->getGreen(), nBlue = _pMap->getBlue();
 	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 

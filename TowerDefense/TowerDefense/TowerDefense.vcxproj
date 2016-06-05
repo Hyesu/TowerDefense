@@ -151,10 +151,12 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TDMap.cpp" />
+    <ClCompile Include="TDObject.cpp" />
     <ClCompile Include="TowerDefense.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TDMap.h" />
+    <ClInclude Include="TDObject.h" />
     <ClInclude Include="TowerDefense.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

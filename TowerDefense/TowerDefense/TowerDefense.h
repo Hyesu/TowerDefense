@@ -28,8 +28,6 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-// for object
-#define TD_OBJECT_Y				(-5.0f + 1.0f)
 
 // init game and handle direct3D
 class TowerDefense
