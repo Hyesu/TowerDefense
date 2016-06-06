@@ -9,6 +9,7 @@
 
 #include "TDMap.h"
 #include "TDPortal.h"
+#include "TDMonster.h"
 
 //-----------------------------------------------------------------------------
 // Constants
@@ -42,8 +43,10 @@ private:
 	IDirect3DVertexBuffer9* _pVertexBuffer;
 	IDirect3DIndexBuffer9*  _pIndexBuffer;
 
+	// Tower Defense Game Variables
 	TDMap* _pMap;
 	TDPortal* _pPortal;
+	TDMonster* _pMonster;
 
 	struct Vertex {
 		Vertex() {}

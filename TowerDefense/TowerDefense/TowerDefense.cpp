@@ -10,10 +10,15 @@ VOID TowerDefense::init() {
 	_pd3dDevice = nullptr;
 
 	_pVertexBuffer = nullptr;
-	_pIndexBuffer = nullptr;	
+	_pIndexBuffer = nullptr;
 
 	_pMap = new TDMap();
 	_pPortal = new TDPortal(_pMap->getPosX(), _pMap->getPosY(), _pMap->getPosZ());
+
+	int nLastTileIndex = _pMap->getNumCube() - 1;
+	_pMonster = new TDMonster(_pMap->getPosX(nLastTileIndex), 
+							  _pMap->getPosY(nLastTileIndex), 
+							  _pMap->getPosZ(nLastTileIndex));
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -84,6 +89,7 @@ VOID TowerDefense::Render() {
 
 		drawObject(_pMap);
 		drawObject(_pPortal);
+		drawObject(_pMonster);
 
 		// End the scene
 		_pd3dDevice->EndScene();

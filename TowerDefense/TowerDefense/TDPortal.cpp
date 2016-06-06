@@ -1,8 +1,8 @@
 #include "TDPortal.h"
 
 TDPortal::TDPortal(float fPosX, float fPosY, float fPosZ) {
-	TDObject::init(COLOR_RED, COLOR_GREEN, COLOR_BLUE,
-		fPosX, fPosY + 1.0f, fPosZ, NUM_CUBE);
+	TDObject::init(PORTAL_COLOR_RED, PORTAL_COLOR_GREEN, PORTAL_COLOR_BLUE,
+		fPosX, fPosY + 1.0f, fPosZ, PORTAL_NUM_CUBE);
 	initPosition();
 }
 void TDPortal::initPosition() {

@@ -3,11 +3,11 @@
 
 #include "TDObject.h"
 
-#define COLOR_RED	0
-#define COLOR_GREEN	255
-#define COLOR_BLUE	0
+#define PORTAL_COLOR_RED	0
+#define PORTAL_COLOR_GREEN	255
+#define PORTAL_COLOR_BLUE	0
 
-#define NUM_CUBE	2
+#define PORTAL_NUM_CUBE		2
 
 class TDPortal : public TDObject {
 private:
