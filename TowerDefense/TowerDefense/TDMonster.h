@@ -9,11 +9,14 @@
 
 #define MONSTER_NUM_CUBE	1
 
+#define MONSTER_POS_Y_LAND	1.0f
+#define MONSTER_POS_Y_AIR	(MONSTER_POS_Y_LAND + 1.0f)
+
 class TDMonster : public TDObject {
 private:
 
 public:
-	TDMonster(float fPosX = 0.0f, float fPosY = 0.0f, float fPosZ = 0.0f);
+	TDMonster();
 };
 
 #endif

@@ -9,7 +9,8 @@
 
 #include "TDMap.h"
 #include "TDPortal.h"
-#include "TDMonster.h"
+#include "TDLandMonster.h"
+#include "TDAirMonster.h"
 
 //-----------------------------------------------------------------------------
 // Constants

@@ -16,7 +16,7 @@ VOID TowerDefense::init() {
 	_pPortal = new TDPortal(_pMap->getPosX(), _pMap->getPosY(), _pMap->getPosZ());
 
 	int nLastTileIndex = _pMap->getNumCube() - 1;
-	_pMonster = new TDMonster(_pMap->getPosX(nLastTileIndex), 
+	_pMonster = new TDLandMonster(_pMap->getPosX(nLastTileIndex), 
 							  _pMap->getPosY(nLastTileIndex), 
 							  _pMap->getPosZ(nLastTileIndex));
 }
