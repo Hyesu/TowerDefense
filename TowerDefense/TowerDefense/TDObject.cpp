@@ -54,3 +54,7 @@ float TDObject::getPosZ(int nIndex) const {
 	else
 		return 0.0f;
 }
+
+Position TDObject::getPosition(int nIndex) const {
+	return _pPosList->at(nIndex);
+}

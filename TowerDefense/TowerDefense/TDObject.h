@@ -40,6 +40,8 @@ public:
 	float getPosX(int nIndex = 0) const;
 	float getPosY(int nIndex = 0) const;
 	float getPosZ(int nIndex = 0) const;
+
+	Position getPosition(int nIndex = 0) const;
 };
 
 #endif

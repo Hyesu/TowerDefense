@@ -19,6 +19,7 @@ VOID TowerDefense::init() {
 	_pMonster = new TDLandMonster(_pMap->getPosX(nLastTileIndex), 
 							  _pMap->getPosY(nLastTileIndex), 
 							  _pMap->getPosZ(nLastTileIndex));
+	_pMonster->setPortalPosition(_pPortal->getPosition());
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -74,18 +75,20 @@ VOID TowerDefense::Cleanup() {
 	if (_pPortal != nullptr)
 		delete _pPortal;
 }
-VOID TowerDefense::Render() {
+VOID TowerDefense::Render(float fTimeDelta) {
 	if (NULL == _pd3dDevice)
 		return;
 
 	// Clear the backbuffer to a TD_BACKGROUND_COLOR
-	_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, TD_BACKGROUND_COLOR, 1.0f, 0);
+	_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, TD_BACKGROUND_COLOR, 1.0f, 0);
 
 	// Begin the scene
 	if (SUCCEEDED(_pd3dDevice->BeginScene())) 	{
 		// Rendering of scene objects can happen here
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+
+		_pMonster->moveToPortal(fTimeDelta);
 
 		drawObject(_pMap);
 		drawObject(_pPortal);

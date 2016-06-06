@@ -31,6 +31,8 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
+#define TD_TIME_CONSTANT		0.001f
+
 
 // init game and handle direct3D
 class TowerDefense
@@ -84,7 +86,7 @@ public:
 
 	HRESULT InitD3D(HWND hWnd);
 	VOID Cleanup();
-	VOID Render();
+	VOID Render(float fTimeDelta);
 
 	HRESULT SetUp();
 };

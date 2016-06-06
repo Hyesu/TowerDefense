@@ -8,14 +8,40 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		PostQuitMessage(0);
 		return 0;
 
-	case WM_PAINT:
+	/*case WM_PAINT:
 		TowerDefense::getInstance()->Render();
 		ValidateRect(hWnd, NULL);
-		return 0;
+		return 0;*/
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
+
+int EnterMsgLoop() {
+	MSG msg;
+	ZeroMemory(&msg, sizeof(MSG));
+
+	static float fLastTime = (float)timeGetTime();
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (msg.message == WM_QUIT) break;
+
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else {
+			float fCurrentTime = (float)timeGetTime();
+			float fTimeDelta = (fCurrentTime - fLastTime) * TD_TIME_CONSTANT;
+			TowerDefense::getInstance()->Render(fTimeDelta);
+
+			fLastTime = fCurrentTime;
+		}
+	}
+	return msg.wParam;
+}
+
 INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT) {
 	UNREFERENCED_PARAMETER(hInst);
 
@@ -44,13 +70,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT) {
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
 
-		// Enter the message loop
-		MSG msg;
-		while (GetMessage(&msg, NULL, 0, 0))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		EnterMsgLoop();
 	}
 
 	UnregisterClass(TD_WINDOW_TITLE, wc.hInstance);

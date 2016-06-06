@@ -13,10 +13,14 @@
 #define MONSTER_POS_Y_AIR	(MONSTER_POS_Y_LAND + 1.0f)
 
 class TDMonster : public TDObject {
-private:
+protected:
+	Position _posPortal;
 
 public:
 	TDMonster();
+
+	void setPortalPosition(Position posPotal);
+	void moveToPortal(float fDelta);
 };
 
 #endif
