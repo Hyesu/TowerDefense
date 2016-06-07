@@ -19,6 +19,21 @@ void TDObject::init(int nRed, int nGreen, int nBlue,
 
 	// set position of first tile
 	_pPosList->push_back(Position(fPosX, fPosY, fPosZ));
+	_posLowerBound = Position(fPosX, fPosY, fPosZ);
+	_posUpperBound = Position(fPosX + 1.0f, fPosY + 1.0f, fPosZ + 1.0f);
+}
+void TDObject::setBound() {
+	for (int i = 1; i < _pPosList->size(); i++) {
+		Position position = _pPosList->at(i);
+
+		_posLowerBound._x = _posLowerBound._x < position._x ? position._x : _posLowerBound._x;
+		_posLowerBound._y = _posLowerBound._y < position._y ? position._y : _posLowerBound._y;
+		_posLowerBound._z = _posLowerBound._z < position._z ? position._z : _posLowerBound._z;
+
+		_posUpperBound._x = _posUpperBound._x < position._x + 1.0f ? position._x + 1.0f : _posUpperBound._x;
+		_posUpperBound._y = _posUpperBound._y < position._y + 1.0f ? position._y + 1.0f : _posUpperBound._y;
+		_posUpperBound._z = _posUpperBound._z < position._z + 1.0f ? position._z + 1.0f : _posUpperBound._z;
+	}
 }
 
 // getter
@@ -57,4 +72,16 @@ float TDObject::getPosZ(int nIndex) const {
 
 Position TDObject::getPosition(int nIndex) const {
 	return _pPosList->at(nIndex);
+}
+bool TDObject::collideWith(const TDObject* pOther) const {
+	// check X-axis
+	bool bCollisionX = (_posLowerBound._x - pOther->_posUpperBound._x > TD_OBJECT_EPSILON
+					 || _posUpperBound._x - pOther->_posLowerBound._x < TD_OBJECT_EPSILON) ? false : true;
+	bool bCollisionY = (_posLowerBound._y - pOther->_posUpperBound._y > TD_OBJECT_EPSILON
+					 || _posUpperBound._y - pOther->_posLowerBound._y < TD_OBJECT_EPSILON) ? false : true;
+	bool bCollisionZ = (_posLowerBound._z - pOther->_posUpperBound._z > TD_OBJECT_EPSILON
+					 || _posUpperBound._z - pOther->_posLowerBound._z < TD_OBJECT_EPSILON) ? false : true;
+
+	if (bCollisionX && bCollisionY && bCollisionZ) return true;
+	else return false;
 }

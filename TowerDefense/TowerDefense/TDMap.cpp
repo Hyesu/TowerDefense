@@ -13,6 +13,7 @@ void TDMap::initPosition() {
 									  TILE_POS_Y,
 									  TILE_POS_Z + i / TILE_NUM_ROW));
 	}
+	TDObject::setBound();
 }
 
 int TDMap::getNumRow() const {

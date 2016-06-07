@@ -8,4 +8,6 @@ TDPortal::TDPortal(float fPosX, float fPosY, float fPosZ) {
 void TDPortal::initPosition() {
 	Position p = _pPosList->at(0);
 	_pPosList->push_back(Position(p._x, p._y + 1.0f, p._z));
+
+	TDObject::setBound();
 }

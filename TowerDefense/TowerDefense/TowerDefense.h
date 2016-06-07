@@ -51,6 +51,8 @@ private:
 	TDPortal* _pPortal;
 	TDMonster* _pMonster;
 
+	HWND _pWindow;
+
 	struct Vertex {
 		Vertex() {}
 		Vertex(float x, float y, float z, DWORD color) {
@@ -70,8 +72,8 @@ private:
 	HRESULT initCamera();
 
 	VOID drawObject(TDObject* pObject);
-	VOID drawMap();
-	VOID drawPortal();
+	VOID doTowerDefense();
+
 	
 public:
 	TowerDefense();

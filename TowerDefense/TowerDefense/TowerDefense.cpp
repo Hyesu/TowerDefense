@@ -52,7 +52,7 @@ HRESULT TowerDefense::InitD3D(HWND hWnd) {
 		return E_FAIL;
 	}
 
-	// Device state would normally be set here
+	_pWindow = hWnd;
 
 	return S_OK;
 }
@@ -88,8 +88,10 @@ VOID TowerDefense::Render(float fTimeDelta) {
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
-		_pMonster->moveToPortal();
+		// do game logic
+		doTowerDefense();
 
+		// draw objects in game
 		drawObject(_pMap);
 		drawObject(_pPortal);
 		drawObject(_pMonster);
@@ -228,28 +230,10 @@ VOID TowerDefense::drawObject(TDObject* pObject) {
 		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 	}
 }
-VOID TowerDefense::drawMap() {
-	int nRed = _pMap->getRed(), nGreen = _pMap->getGreen(), nBlue = _pMap->getBlue();
-	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
-	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
-
-	D3DXMATRIX worldMatrix;
-	for (int i = 0; i < _pMap->getNumCube(); i++) {
-		D3DXMatrixTranslation(&worldMatrix, _pMap->getPosX(i), _pMap->getPosY(i), _pMap->getPosZ(i));
-		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
-
-		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
+VOID TowerDefense::doTowerDefense() {
+	_pMonster->moveToPortal();
+	if (_pPortal->collideWith(_pMonster)) {
+		MessageBox(0, L"collision!", 0, 0);
+		DestroyWindow(_pWindow);
 	}
-}
-VOID TowerDefense::drawPortal() {
-	/*int nRed = _pPortal->getRed(), nGreen = _pPortal->getGreen(), nBlue = _pPortal->getBlue();
-	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
-	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
-
-	D3DXMATRIX worldMatrix;
-	float x = _pMap->getPosX(), y = _pMap->getPosY(), z = _pMap->getPosZ();
-	D3DXMatrixTranslation(&worldMatrix, TD_TILE_X, TD_OBJECT_Y, TD_TILE_Z);
-	_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
-
-	_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);*/
 }

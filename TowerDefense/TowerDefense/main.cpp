@@ -7,11 +7,6 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		TowerDefense::getInstance()->Cleanup();
 		PostQuitMessage(0);
 		return 0;
-
-	/*case WM_PAINT:
-		TowerDefense::getInstance()->Render();
-		ValidateRect(hWnd, NULL);
-		return 0;*/
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);

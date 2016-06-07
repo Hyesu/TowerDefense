@@ -19,8 +19,15 @@ void TDMonster::moveToPortal() {
 	if (_posPortal._z - getPosZ() > MONSTER_MOVE_THRESHOLD) fDeltaZ = MONSTER_MOVE_UNIT;
 	else fDeltaZ = -MONSTER_MOVE_UNIT;
 
+	// move position
 	for (int i = 0; i < _pPosList->size(); i++) {
 		_pPosList->at(i)._x += fDeltaX;
 		_pPosList->at(i)._z += fDeltaZ;
 	}
+
+	// modify bound pos
+	_posLowerBound._x += fDeltaX;
+	_posLowerBound._z += fDeltaZ;
+	_posUpperBound._x += fDeltaX;
+	_posUpperBound._z += fDeltaZ;
 }
