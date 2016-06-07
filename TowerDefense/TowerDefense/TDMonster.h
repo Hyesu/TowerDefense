@@ -12,6 +12,9 @@
 #define MONSTER_POS_Y_LAND	1.0f
 #define MONSTER_POS_Y_AIR	(MONSTER_POS_Y_LAND + 1.0f)
 
+#define MONSTER_MOVE_UNIT		0.05f
+#define MONSTER_MOVE_THRESHOLD	0.0f
+
 class TDMonster : public TDObject {
 protected:
 	Position _posPortal;
@@ -20,7 +23,7 @@ public:
 	TDMonster();
 
 	void setPortalPosition(Position posPotal);
-	void moveToPortal(float fDelta);
+	void moveToPortal();
 };
 
 #endif

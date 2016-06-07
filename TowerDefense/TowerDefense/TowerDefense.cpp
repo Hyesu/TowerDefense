@@ -16,7 +16,7 @@ VOID TowerDefense::init() {
 	_pPortal = new TDPortal(_pMap->getPosX(), _pMap->getPosY(), _pMap->getPosZ());
 
 	int nLastTileIndex = _pMap->getNumCube() - 1;
-	_pMonster = new TDLandMonster(_pMap->getPosX(nLastTileIndex), 
+	_pMonster = new TDAirMonster(_pMap->getPosX(nLastTileIndex), 
 							  _pMap->getPosY(nLastTileIndex), 
 							  _pMap->getPosZ(nLastTileIndex));
 	_pMonster->setPortalPosition(_pPortal->getPosition());
@@ -88,7 +88,7 @@ VOID TowerDefense::Render(float fTimeDelta) {
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
-		_pMonster->moveToPortal(fTimeDelta);
+		_pMonster->moveToPortal();
 
 		drawObject(_pMap);
 		drawObject(_pPortal);
