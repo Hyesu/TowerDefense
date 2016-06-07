@@ -33,6 +33,7 @@ protected:
 
 public:
 	TDObject();
+	~TDObject();
 
 	// getter
 	int getRed() const;

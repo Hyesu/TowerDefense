@@ -7,6 +7,10 @@ TDObject::TDObject() {
 	_nNumCube = 0;
 	_pPosList = nullptr;
 }
+TDObject::~TDObject() {
+	if (_pPosList != nullptr)
+		delete _pPosList;
+}
 void TDObject::init(int nRed, int nGreen, int nBlue,
 	float fPosX, float fPosY, float fPosZ, int nNumCube) {
 	// set tile color
