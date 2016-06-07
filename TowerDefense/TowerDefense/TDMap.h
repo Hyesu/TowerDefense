@@ -4,7 +4,7 @@
 #include "TDObject.h"
 
 #define TILE_COLOR		64
-#define TILE_NUM_ROW	5
+#define TILE_NUM_ROW	6
 #define TILE_NUM_COL	(TILE_NUM_ROW)
 
 #define TILE_POS_X		((float) (TILE_NUM_ROW / 2 * -1))

@@ -32,6 +32,7 @@
 #define TD_PROJECTION_FAR		1000.0f
 
 #define TD_TIME_CONSTANT		0.001f
+#define TD_CAMERA_ROTATION		0.1f
 
 
 // init game and handle direct3D

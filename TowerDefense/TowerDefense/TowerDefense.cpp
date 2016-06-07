@@ -256,10 +256,10 @@ VOID TowerDefense::SetCamera(short nClickPosX) {
 
 	D3DXMATRIX rotationMatrix;
 	if (nClickPosX > _nClickPosX) {
-		_fCameraAngle += 0.1f;
+		_fCameraAngle -= TD_CAMERA_ROTATION;
 	}
-	else {
-		_fCameraAngle -= 0.1f;
+	else if(nClickPosX < _nClickPosX) {
+		_fCameraAngle += TD_CAMERA_ROTATION;
 	}
 	D3DXMatrixRotationY(&rotationMatrix, _fCameraAngle);
 	D3DXVec3TransformNormal(&_vCameraPosition, &_vCameraPosition, &rotationMatrix);
