@@ -37,10 +37,11 @@ int EnterMsgLoop() {
 		}
 		else {
 			float fCurrentTime = (float)timeGetTime();
-			float fTimeDelta = (fCurrentTime - fLastTime) * TD_TIME_CONSTANT;
-			TowerDefense::getInstance()->Render(fTimeDelta);
-
-			fLastTime = fCurrentTime;
+			float fTimeDelta = fCurrentTime - fLastTime;
+			if (fTimeDelta >= TD_RENDER_INTERVAL) {
+				TowerDefense::getInstance()->Render(fTimeDelta);
+				fLastTime = fCurrentTime;
+			}
 		}
 	}
 	return msg.wParam;
