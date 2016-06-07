@@ -234,6 +234,7 @@ VOID TowerDefense::doTowerDefense() {
 	_pMonster->moveToPortal();
 	if (_pPortal->collideWith(_pMonster)) {
 		MessageBox(0, L"collision!", 0, 0);
+		delete _pMonster;
 		DestroyWindow(_pWindow);
 	}
 }
