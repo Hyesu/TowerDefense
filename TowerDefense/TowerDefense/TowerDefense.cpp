@@ -189,8 +189,8 @@ HRESULT TowerDefense::initIndexBuffer() {
 	pIndices[27] = 0; pIndices[28] = 5; pIndices[29] = 1;
 
 	// bottom
-	pIndices[30] = 2; pIndices[31] = 3; pIndices[32] = 6;
-	pIndices[33] = 6; pIndices[34] = 3; pIndices[35] = 7;
+	pIndices[30] = 6; pIndices[31] = 7; pIndices[32] = 2;
+	pIndices[33] = 2; pIndices[34] = 7; pIndices[35] = 3;
 
 	_pIndexBuffer->Unlock();
 
