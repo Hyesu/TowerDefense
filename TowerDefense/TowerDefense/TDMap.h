@@ -7,7 +7,7 @@
 #define TILE_NUM_ROW	5
 #define TILE_NUM_COL	(TILE_NUM_ROW)
 
-#define TILE_POS_X		((float) (TILE_NUM_ROW * -1))
+#define TILE_POS_X		((float) (TILE_NUM_ROW / 2 * -1))
 #define TILE_POS_Y		(TILE_POS_X)
 #define TILE_POS_Z		0.0f
 

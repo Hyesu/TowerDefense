@@ -12,6 +12,12 @@ VOID TowerDefense::init() {
 	_pVertexBuffer = nullptr;
 	_pIndexBuffer = nullptr;
 
+	_bRButtonClicked = false;
+
+	_vCameraPosition = TD_CAMERA_POSITION;
+	_fCameraAngle = 0.0f;
+
+	// TD Objects init
 	_pMap = new TDMap();
 	_pPortal = new TDPortal(_pMap->getPosX(), _pMap->getPosY(), _pMap->getPosZ());
 
@@ -191,14 +197,7 @@ HRESULT TowerDefense::initIndexBuffer() {
 	return S_OK;
 }
 HRESULT TowerDefense::initCamera() {
-	// set view space
-	D3DXVECTOR3 cameraPosition = TD_CAMERA_POSITION;
-	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
-	D3DXVECTOR3 upVector = TD_WORLD_UP_VECTOR;
-
-	D3DXMATRIX viewMatrix;
-	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &targetPosition, &upVector);
-	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
+	initViewSpace();
 
 	// set projection
 	D3DXMATRIX projectionMatrix;
@@ -211,6 +210,15 @@ HRESULT TowerDefense::initCamera() {
 	_pd3dDevice->SetRenderState(D3DRS_LIGHTING, false);
 
 	return S_OK;
+}
+VOID TowerDefense::initViewSpace() {
+	D3DXVECTOR3 cameraPosition = _vCameraPosition;
+	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
+	D3DXVECTOR3 upVector = TD_WORLD_UP_VECTOR;
+
+	D3DXMATRIX viewMatrix;
+	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &targetPosition, &upVector);
+	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
 }
 
 VOID TowerDefense::Finalize() {
@@ -237,4 +245,24 @@ VOID TowerDefense::doTowerDefense() {
 		delete _pMonster;
 		DestroyWindow(_pWindow);
 	}
+}
+
+VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
+	_bRButtonClicked = bButtonClicked;
+	_nClickPosX = nClickPosX;
+}
+VOID TowerDefense::SetCamera(short nClickPosX) {
+	if (!_bRButtonClicked) return;
+
+	D3DXMATRIX rotationMatrix;
+	if (nClickPosX > _nClickPosX) {
+		_fCameraAngle += 0.1f;
+	}
+	else {
+		_fCameraAngle -= 0.1f;
+	}
+	D3DXMatrixRotationY(&rotationMatrix, _fCameraAngle);
+	D3DXVec3TransformNormal(&_vCameraPosition, &_vCameraPosition, &rotationMatrix);
+	initViewSpace();
+	_nClickPosX = nClickPosX;
 }

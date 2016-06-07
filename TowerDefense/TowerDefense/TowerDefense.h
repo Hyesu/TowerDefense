@@ -17,13 +17,13 @@
 //-----------------------------------------------------------------------------
 #define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
 #define TD_WINDOW_TITLE			(L"Tower Defense")
-#define TD_WINDOW_WIDTH			600
+#define TD_WINDOW_WIDTH			800
 #define TD_WINDOW_HEIGHT		600
 
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
 
-#define TD_CAMERA_POSITION		D3DXVECTOR3(5.0f, 5.0f, -5.0f)
+#define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 5.0f, -10.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
 #define TD_WORLD_UP_VECTOR		D3DXVECTOR3(0.0f, 1.0f,  0.0f)
 
@@ -45,13 +45,19 @@ private:
 	LPDIRECT3DDEVICE9		_pd3dDevice;	// Our rendering device
 	IDirect3DVertexBuffer9* _pVertexBuffer;
 	IDirect3DIndexBuffer9*  _pIndexBuffer;
+	D3DXVECTOR3				_vCameraPosition;
+	float					_fCameraAngle;
 
 	// Tower Defense Game Variables
 	TDMap* _pMap;
 	TDPortal* _pPortal;
 	TDMonster* _pMonster;
 
+	// Window Variables: window, messages, ...
 	HWND _pWindow;
+	bool _bRButtonClicked;
+	short _nClickPosX;
+
 
 	struct Vertex {
 		Vertex() {}
@@ -70,6 +76,7 @@ private:
 	HRESULT initVertexBuffer(D3DCOLOR color);
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
+	VOID initViewSpace();
 
 	VOID drawObject(TDObject* pObject);
 	VOID doTowerDefense();
@@ -91,6 +98,9 @@ public:
 	VOID Render(float fTimeDelta);
 
 	HRESULT SetUp();
+
+	VOID SetRButton(bool bButtonClicked, short nClickPosX);
+	VOID SetCamera(short nClickPosX);
 };
 
 
