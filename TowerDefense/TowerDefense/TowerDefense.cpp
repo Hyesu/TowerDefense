@@ -57,7 +57,9 @@ HRESULT TowerDefense::InitD3D(HWND hWnd) {
 		return E_FAIL;
 	}
 
+	// set render interval
 	_pWindow = hWnd;
+	SetTimer(_pWindow, TD_RENDER_TIMER_ID, TD_RENDER_INTERVAL, nullptr);
 
 	return S_OK;
 }
@@ -79,6 +81,8 @@ VOID TowerDefense::Cleanup() {
 
 	if (_pPortal != nullptr)
 		delete _pPortal;
+
+	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
 }
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)

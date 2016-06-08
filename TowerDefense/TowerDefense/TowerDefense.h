@@ -32,6 +32,9 @@
 
 #define TD_CAMERA_ROTATION		0.1f
 
+#define TD_RENDER_INTERVAL		100		// 100 ms interval
+#define TD_RENDER_TIMER_ID		0x200
+
 
 // init game and handle direct3D
 class TowerDefense

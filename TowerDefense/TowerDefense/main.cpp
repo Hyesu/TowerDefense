@@ -7,6 +7,15 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		TowerDefense::getInstance()->Cleanup();
 		PostQuitMessage(0);
 		return 0;
+	case WM_TIMER:
+		switch (wParam)
+		{
+		case TD_RENDER_TIMER_ID:
+			TowerDefense::getInstance()->Render();
+			ValidateRect(hWnd, nullptr);
+			break;
+		}
+		return 0;
 	/*case WM_RBUTTONDOWN:
 		TowerDefense::getInstance()->SetRButton(true, LOWORD(lParam));
 		return 0;
@@ -15,10 +24,6 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	case WM_MOUSEMOVE:
 		TowerDefense::getInstance()->SetCamera(LOWORD(lParam));
-		return 0;*/
-	/*case WM_PAINT:
-		TowerDefense::getInstance()->Render();
-		ValidateRect(hWnd, nullptr);
 		return 0;*/
 	}
 
@@ -32,15 +37,9 @@ VOID EnterMsgLoop(HWND hWnd) {
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		if (msg.message == WM_QUIT) break;
-
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		else {
-			TowerDefense::getInstance()->Render();		
-			ValidateRect(hWnd, nullptr);
-		}
+		
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 }
 
