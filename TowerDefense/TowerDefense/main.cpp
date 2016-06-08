@@ -14,6 +14,9 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			TowerDefense::getInstance()->Render();
 			ValidateRect(hWnd, nullptr);
 			break;
+		case TD_MISSILE_TIMER_ID:
+			TowerDefense::getInstance()->createMissile();
+			break;
 		}
 		return 0;
 	case WM_RBUTTONDOWN:

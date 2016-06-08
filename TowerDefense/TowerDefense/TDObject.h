@@ -27,7 +27,7 @@ protected:
 public:
 	TDObject(float fLengthX = OBJECT_DEFAULT_LENGTH, float fLengthY = OBJECT_DEFAULT_LENGTH, float fLengthZ = OBJECT_DEFAULT_LENGTH,
 		int nRed = OBJECT_DEFAULT_RED, int nGreen = OBJECT_DEFAULT_GREEN, int nBlue = OBJECT_DEFAULT_BLUE);
-	~TDObject();
+	virtual ~TDObject();
 
 	// getter
 	const D3DCOLOR& getColor() const;

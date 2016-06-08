@@ -7,10 +7,15 @@
 #pragma warning( default : 4996 )
 #include <d3dx9.h>
 
+#include <list>
+
 #include "TDMap.h"
 #include "TDPortal.h"
 #include "TDAirMonster.h"
 #include "TDAirTower.h"
+#include "TDMissile.h"
+
+#define DEBUG(X)				MessageBox(0, X, 0, 0)
 
 //-----------------------------------------------------------------------------
 // Constants
@@ -33,8 +38,10 @@
 
 #define TD_CAMERA_ROTATION		0.05f
 
-#define TD_RENDER_INTERVAL		100		// 100 ms interval
-#define TD_RENDER_TIMER_ID		0x200
+#define TD_RENDER_INTERVAL		50		// 50 ms interval
+#define TD_RENDER_TIMER_ID		1
+#define TD_MISSILE_INTERVAL		1000
+#define TD_MISSILE_TIMER_ID		2
 
 
 // init game and handle direct3D
@@ -80,9 +87,13 @@ private:
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
 	VOID initViewSpace(D3DXVECTOR3 vCameraPosition);
+	VOID initTDObjects();
 
+	VOID drawTowerDefense();
 	VOID drawObject(const TDObject* pObject);
 	VOID doTowerDefense();
+
+	VOID createTower();
 
 	
 public:
@@ -104,6 +115,8 @@ public:
 	VOID SetRButton(bool bButtonClicked, short nClickPosX);
 	VOID SetCamera(short nClickPosX);
 	bool GetRButton() const;
+
+	VOID createMissile();
 };
 
 

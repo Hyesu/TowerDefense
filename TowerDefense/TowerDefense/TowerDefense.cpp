@@ -15,20 +15,6 @@ VOID TowerDefense::init() {
 
 	_vCameraPosition = TD_CAMERA_POSITION;
 	_fCameraAngle = 0.0f;
-
-	// TD Objects init
-	_pMap = new TDMap();
-
-	D3DXVECTOR3 mapPosition = _pMap->getPosition();
-	_pPortal = new TDPortal(mapPosition.x, mapPosition.y, mapPosition.z);
-
-	D3DXVECTOR3 mapPosition2 = _pMap->getEndPosition();
-	_pMonster = new TDAirMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
-	_pMonster->setPortalPosition(_pPortal->getPosition());
-
-	// tower create should be changed later(by L button click event handler)
-	D3DXVECTOR3 tempMapPosition = mapPosition + D3DXVECTOR3(_pMap->getLengthX() * 0.3f, 0, _pMap->getLengthZ() * 0.7f);
-	_pTower = new TDAirTower(tempMapPosition.x, tempMapPosition.y, tempMapPosition.z);
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -78,9 +64,13 @@ VOID TowerDefense::Cleanup() {
 	if (_pMap != nullptr)			delete _pMap;
 	if (_pPortal != nullptr)		delete _pPortal;
 	if (_pMonster != nullptr)		delete _pMonster;
-	if (_pTower != nullptr)			delete _pTower;
+	if (_pTower != nullptr) {
+		if (!_pTower->getMissileList()->empty())
+			KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
 
-	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
+		delete _pTower;
+		KillTimer(_pWindow, TD_RENDER_TIMER_ID);
+	}
 }
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
@@ -95,14 +85,8 @@ VOID TowerDefense::Render() {
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
-		// do game logic
 		doTowerDefense();
-
-		// draw objects in game
-		drawObject(_pMap);
-		drawObject(_pTower);
-		drawObject(_pPortal);
-		drawObject(_pMonster);
+		drawTowerDefense();
 
 		// End the scene
 		_pd3dDevice->EndScene();
@@ -122,6 +106,8 @@ HRESULT TowerDefense::SetUp() {
 		MessageBox(0, L"InitCamera Failed", 0, 0);
 		return E_FAIL;
 	}
+	initTDObjects();
+
 	return S_OK;
 }
 HRESULT TowerDefense::initVertexBuffer(const TDObject* pObject) {
@@ -223,7 +209,32 @@ VOID TowerDefense::initViewSpace(D3DXVECTOR3 vCameraPosition) {
 	D3DXMatrixLookAtLH(&viewMatrix, &vCameraPosition, &targetPosition, &upVector);
 	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
 }
+VOID TowerDefense::initTDObjects() {
+	_pMap = new TDMap();
 
+	D3DXVECTOR3 mapPosition = _pMap->getPosition();
+	_pPortal = new TDPortal(mapPosition.x, mapPosition.y, mapPosition.z);
+
+	D3DXVECTOR3 mapPosition2 = _pMap->getEndPosition();
+	_pMonster = new TDAirMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
+	_pMonster->setPortalPosition(_pPortal->getPosition());
+
+	// tower create should be changed later(by L button click event handler)
+	createTower();
+}
+
+VOID TowerDefense::drawTowerDefense() {
+	drawObject(_pMap);
+	drawObject(_pTower);
+	drawObject(_pPortal);
+	drawObject(_pMonster);
+
+	std::list<TDMissile*>* pMissileList = _pTower->getMissileList();
+	if (pMissileList->empty()) return;
+	for (std::list<TDMissile*>::iterator it = pMissileList->begin(); it != pMissileList->end(); ++it) {
+		drawObject((TDMissile*) (*it));
+	}
+}
 VOID TowerDefense::drawObject(const TDObject* pObject) {
 	initVertexBuffer(pObject);
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
@@ -237,7 +248,11 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 
 }
 VOID TowerDefense::doTowerDefense() {
+	// move objects
 	_pMonster->moveToPortal();
+	_pTower->moveMissile();
+
+	// check collision
 	if (_pPortal->collideWith(_pMonster)) {
 		MessageBox(0, L"collision!", 0, 0);
 		delete _pMonster;
@@ -268,4 +283,15 @@ VOID TowerDefense::SetCamera(short nClickPosX) {
 }
 bool TowerDefense::GetRButton() const {
 	return _bRButtonClicked;
+}
+
+VOID TowerDefense::createTower() {
+	D3DXVECTOR3 tempMapPosition = _pMap->getPosition() + D3DXVECTOR3(_pMap->getLengthX() * 0.3f, 0, _pMap->getLengthZ() * 0.7f);
+	_pTower = new TDAirTower(tempMapPosition.x, tempMapPosition.y, tempMapPosition.z);
+
+	SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
+}
+VOID TowerDefense::createMissile() {
+	if (_pTower == nullptr) return;
+	_pTower->createMissile();
 }
