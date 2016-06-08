@@ -19,6 +19,6 @@ private:
 public:
 	TDMissile(float fTowerPosX, float fTowerPosY, float fTowerPosZ);
 
-	void move();
+	bool move(D3DXVECTOR3 vBoundary1, D3DXVECTOR3 vBoundary2);
 };
 #endif

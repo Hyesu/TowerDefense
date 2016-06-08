@@ -5,7 +5,7 @@
 
 class TDAirTower : public TDTower {
 public:
-	TDAirTower(float fMapPosX = TOWER_DEFAULT_POS_X, float fMapPosY = TOWER_DEFAULT_POS_Y, float fMapPosZ = TOWER_DEFAULT_POS_Z);
+	TDAirTower(D3DXVECTOR3 vTowerPosition, D3DXVECTOR3 vMapPosition1, D3DXVECTOR3 vMapPosition2);
 };
 
 #endif

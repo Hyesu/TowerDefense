@@ -287,7 +287,7 @@ bool TowerDefense::GetRButton() const {
 
 VOID TowerDefense::createTower() {
 	D3DXVECTOR3 tempMapPosition = _pMap->getPosition() + D3DXVECTOR3(_pMap->getLengthX() * 0.3f, 0, _pMap->getLengthZ() * 0.7f);
-	_pTower = new TDAirTower(tempMapPosition.x, tempMapPosition.y, tempMapPosition.z);
+	_pTower = new TDAirTower(tempMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
 
 	SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
 }

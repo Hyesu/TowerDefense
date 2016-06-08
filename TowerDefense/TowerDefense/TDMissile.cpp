@@ -9,7 +9,17 @@ TDMissile::TDMissile(float fTowerPosX, float fTowerPosY, float fTowerPosZ)
 	_vDirection = MISSILE_MOVE_UNIT * MISSLE_DEFAULT_DIRECTION;
 }
 
-void TDMissile::move() {
+// if missile moving is successful, return true
+// but if missile is out of boundary, return false
+bool TDMissile::move(D3DXVECTOR3 vBoundary1, D3DXVECTOR3 vBoundary2) {
 	_vPosition1 += _vDirection;
 	_vPosition2 += _vDirection;
+
+	if (_vPosition1.x > vBoundary2.x 
+		|| _vPosition2.x < vBoundary1.x
+		|| _vPosition1.z > vBoundary2.z
+		|| _vPosition2.z < vBoundary1.z)
+		return false;
+	else
+		return true;
 }

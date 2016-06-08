@@ -19,9 +19,10 @@
 class TDTower : public TDObject {
 private:
 	std::list<TDMissile*>* _pMissileList;
+	D3DXVECTOR3 _vMissileBoundary1, _vMissileBoundary2;
 
 public:
-	TDTower(float fMapPosX = TOWER_DEFAULT_POS_X, float fMapPosY = TOWER_DEFAULT_POS_Y, float fMapPosZ = TOWER_DEFAULT_POS_Z);
+	TDTower(D3DXVECTOR3 vTowerPosition, D3DXVECTOR3 vMapPosition1, D3DXVECTOR3 vMapPosition2);
 	~TDTower();
 
 	void createMissile();

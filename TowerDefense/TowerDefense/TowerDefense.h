@@ -40,7 +40,7 @@
 
 #define TD_RENDER_INTERVAL		50		// 50 ms interval
 #define TD_RENDER_TIMER_ID		1
-#define TD_MISSILE_INTERVAL		1000
+#define TD_MISSILE_INTERVAL		1500
 #define TD_MISSILE_TIMER_ID		2
 
 
