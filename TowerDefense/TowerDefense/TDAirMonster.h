@@ -7,7 +7,7 @@ class TDAirMonster : public TDMonster {
 private:
 
 public:
-	TDAirMonster(float fPosX = 0.0f, float fPosY = 0.0f, float fPosZ = 0.0f);
+	TDAirMonster(float fPosMapEndX = MONSTER_DEFAULT_POS_X, float fPosMapEndY = MONSTER_DEFAULT_POS_Y, float fPosMapEndZ = MONSTER_DEFAULT_POS_Z);
 };
 
 #endif

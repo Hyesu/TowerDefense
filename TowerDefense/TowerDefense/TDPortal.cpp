@@ -1,13 +1,9 @@
 #include "TDPortal.h"
 
-TDPortal::TDPortal(float fPosX, float fPosY, float fPosZ) {
-	TDObject::init(PORTAL_COLOR_RED, PORTAL_COLOR_GREEN, PORTAL_COLOR_BLUE,
-		fPosX, fPosY + 1.0f, fPosZ, PORTAL_NUM_CUBE);
-	initPosition();
-}
-void TDPortal::initPosition() {
-	Position p = _pPosList->at(0);
-	_pPosList->push_back(Position(p._x, p._y + 1.0f, p._z));
-
-	TDObject::setBound();
+TDPortal::TDPortal(float fMapPosX, float fMapPosY, float fMapPosZ) :
+	TDObject::TDObject(PORTAL_LENGTH_X, PORTAL_LENGTH_Y, PORTAL_LENGTH_Z,
+		PORTAL_COLOR_RED, PORTAL_COLOR_GREEN, PORTAL_COLOR_BLUE) {
+	D3DXVECTOR3 portalPos = D3DXVECTOR3(fMapPosX, fMapPosY + 1.0f, fMapPosZ);
+	_vPosition1 = portalPos;
+	_vPosition2 += portalPos;
 }

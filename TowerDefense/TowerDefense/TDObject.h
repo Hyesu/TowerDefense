@@ -1,52 +1,44 @@
 #ifndef __TD_OBJECT_H__
 #define __TD_OBJECT_H__
 
-#include <vector>
-using namespace std;
+#include <d3d9.h>
+#include <d3dx9.h>
 
-#define TD_OBJECT_EPSILON	0.1f
+#define TD_OBJECT_EPSILON		0.1f
 
-class Position {
-public:
-	float _x, _y, _z;
-	Position() {
-		_x = _y = _z = 0.0f;
-	}
-	Position(float x, float y, float z) {
-		_x = x, _y = y, _z = z;
-	}
-};
+#define OBJECT_DEFAULT_RED		0
+#define OBJECT_DEFAULT_BLUE		0
+#define OBJECT_DEFAULT_GREEN	0
+
+#define OBJECT_DEFAULT_LOWER_X	-0.5f
+#define OBJECT_DEFAULT_LOWER_Y	-0.5f
+#define OBJECT_DEFAULT_LOWER_Z	-0.5f
+
+#define OBJECT_DEFAULT_LENGTH	1.0f
 
 class TDObject {
 private:
-	int _nRed, _nGreen, _nBlue;		// color
-	int _nNumCube;					// number of cube
-
+	D3DCOLOR _color;
+	D3DXVECTOR3 _vLowerBound, _vUpperBound;		// object lower bound and upper bound
 
 protected:
-	vector<Position>* _pPosList;
-	Position _posLowerBound, _posUpperBound;
-
-	void init(int nRed, int nGreen, int nBlue,
-		float fPosX, float fPosY, float fPosZ, int nNumCube);
-	void setBound();
+	D3DXVECTOR3 _vPosition1, _vPosition2;
 
 public:
-	TDObject();
+	TDObject(float fLengthX = OBJECT_DEFAULT_LENGTH, float fLengthY = OBJECT_DEFAULT_LENGTH, float fLengthZ = OBJECT_DEFAULT_LENGTH,
+		int nRed = OBJECT_DEFAULT_RED, int nGreen = OBJECT_DEFAULT_GREEN, int nBlue = OBJECT_DEFAULT_BLUE);
 	~TDObject();
 
 	// getter
-	int getRed() const;
-	int getGreen() const;
-	int getBlue() const;
+	const D3DCOLOR& getColor() const;
+	const D3DXVECTOR3& getLowerBound() const;
+	const D3DXVECTOR3& getUpperBound() const;
+	const D3DXVECTOR3& getPosition() const;
+	const D3DXVECTOR3& getEndPosition() const;
 
-	int getNumCube() const;
-
-	float getPosX(int nIndex = 0) const;
-	float getPosY(int nIndex = 0) const;
-	float getPosZ(int nIndex = 0) const;
-
-	Position getPosition(int nIndex = 0) const;
+	const float getLengthX() const;
+	const float getLengthY() const;
+	const float getLengthZ() const;
 
 	bool collideWith(const TDObject* pOther) const;
 };

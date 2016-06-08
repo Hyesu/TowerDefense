@@ -1,6 +1,7 @@
 #include "TDAirMonster.h"
 
-TDAirMonster::TDAirMonster(float fPosX, float fPosY, float fPosZ) {
-	TDObject::init(MONSTER_COLOR_RED, MONSTER_COLOR_GREEN, MONSTER_COLOR_BLUE,
-		fPosX, fPosY + MONSTER_POS_Y_AIR, fPosZ, MONSTER_NUM_CUBE);
+TDAirMonster::TDAirMonster(float fPosMapEndX, float fPosMapEndY, float fPosMapEndZ)
+	: TDMonster(fPosMapEndX, fPosMapEndY, fPosMapEndZ) {
+	_vPosition1.y += 1.0f;
+	_vPosition2.y += 1.0f;
 }

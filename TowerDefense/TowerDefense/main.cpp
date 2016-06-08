@@ -7,7 +7,7 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		TowerDefense::getInstance()->Cleanup();
 		PostQuitMessage(0);
 		return 0;
-	case WM_RBUTTONDOWN:
+	/*case WM_RBUTTONDOWN:
 		TowerDefense::getInstance()->SetRButton(true, LOWORD(lParam));
 		return 0;
 	case WM_RBUTTONUP:
@@ -15,17 +15,19 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	case WM_MOUSEMOVE:
 		TowerDefense::getInstance()->SetCamera(LOWORD(lParam));
-		return 0;
+		return 0;*/
+	/*case WM_PAINT:
+		TowerDefense::getInstance()->Render();
+		ValidateRect(hWnd, nullptr);
+		return 0;*/
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-int EnterMsgLoop() {
+VOID EnterMsgLoop(HWND hWnd) {
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
-
-	static float fLastTime = (float)timeGetTime();
 
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -36,15 +38,10 @@ int EnterMsgLoop() {
 			DispatchMessage(&msg);
 		}
 		else {
-			float fCurrentTime = (float)timeGetTime();
-			float fTimeDelta = fCurrentTime - fLastTime;
-			if (fTimeDelta >= TD_RENDER_INTERVAL) {
-				TowerDefense::getInstance()->Render(fTimeDelta);
-				fLastTime = fCurrentTime;
-			}
+			TowerDefense::getInstance()->Render();		
+			ValidateRect(hWnd, nullptr);
 		}
 	}
-	return msg.wParam;
 }
 
 INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT) {
@@ -75,7 +72,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT) {
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
 
-		EnterMsgLoop();
+		EnterMsgLoop(hWnd);
 	}
 
 	UnregisterClass(TD_WINDOW_TITLE, wc.hInstance);

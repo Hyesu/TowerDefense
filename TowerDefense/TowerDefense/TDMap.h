@@ -3,25 +3,19 @@
 
 #include "TDObject.h"
 
-#define TILE_COLOR		64
-#define TILE_NUM_ROW	6
-#define TILE_NUM_COL	(TILE_NUM_ROW)
+#define MAP_COLOR		64
 
-#define TILE_POS_X		((float) (TILE_NUM_ROW / 2 * -1))
-#define TILE_POS_Y		(TILE_POS_X)
-#define TILE_POS_Z		0.0f
+#define MAP_LENGTH_X	6.0f
+#define MAP_LENGTH_Y	1.0f
+#define MAP_LENGTH_Z	(MAP_LENGTH_X)
+
+#define MAP_POS_X		((float) (MAP_LENGTH_X / 2 * -1))
+#define MAP_POS_Y		0.0f
+#define MAP_POS_Z		(MAP_POS_X)
 
 class TDMap : public TDObject{
-private:
-	int _nNumRow, _nNumCol;			// number of tiles
-
-	void initPosition();
-
 public:
 	TDMap();
-
-	int getNumRow() const;
-	int getNumCol() const;
 };
 
 #endif

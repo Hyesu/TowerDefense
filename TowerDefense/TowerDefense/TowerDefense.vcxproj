@@ -22,6 +22,7 @@
     <ProjectGuid>{3686BEB4-B324-4934-B18C-8736E2313003}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TowerDefense</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -33,7 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -151,7 +152,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TDAirMonster.cpp" />
-    <ClCompile Include="TDLandMoster.cpp" />
     <ClCompile Include="TDMap.cpp" />
     <ClCompile Include="TDMonster.cpp" />
     <ClCompile Include="TDObject.cpp" />
@@ -160,7 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TDAirMonster.h" />
-    <ClInclude Include="TDLandMonster.h" />
     <ClInclude Include="TDMap.h" />
     <ClInclude Include="TDMonster.h" />
     <ClInclude Include="TDObject.h" />

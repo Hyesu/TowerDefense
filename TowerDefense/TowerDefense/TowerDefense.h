@@ -9,7 +9,6 @@
 
 #include "TDMap.h"
 #include "TDPortal.h"
-#include "TDLandMonster.h"
 #include "TDAirMonster.h"
 
 //-----------------------------------------------------------------------------
@@ -31,7 +30,6 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-#define TD_RENDER_INTERVAL		10.0f
 #define TD_CAMERA_ROTATION		0.1f
 
 
@@ -56,8 +54,8 @@ private:
 
 	// Window Variables: window, messages, ...
 	HWND _pWindow;
-	bool _bRButtonClicked;
-	short _nClickPosX;
+	/*bool _bRButtonClicked;
+	short _nClickPosX;*/
 
 
 	struct Vertex {
@@ -73,12 +71,12 @@ private:
 	};
 
 	VOID init();
-	HRESULT initVertexBuffer(D3DCOLOR color);
+	HRESULT initVertexBuffer(const TDObject* pObject);
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
 	VOID initViewSpace();
 
-	VOID drawObject(TDObject* pObject);
+	VOID drawObject(const TDObject* pObject);
 	VOID doTowerDefense();
 
 	
@@ -91,16 +89,15 @@ public:
 		}
 		return _pInstance;
 	}
-	VOID Finalize();
 
 	HRESULT InitD3D(HWND hWnd);
 	VOID Cleanup();
-	VOID Render(float fTimeDelta);
+	VOID Render();
 
 	HRESULT SetUp();
 
-	VOID SetRButton(bool bButtonClicked, short nClickPosX);
-	VOID SetCamera(short nClickPosX);
+	/*VOID SetRButton(bool bButtonClicked, short nClickPosX);
+	VOID SetCamera(short nClickPosX);*/
 };
 
 

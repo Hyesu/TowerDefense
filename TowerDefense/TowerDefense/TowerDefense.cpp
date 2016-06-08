@@ -8,23 +8,22 @@ TowerDefense::TowerDefense() {
 VOID TowerDefense::init() {
 	_pD3D = nullptr;
 	_pd3dDevice = nullptr;
-
 	_pVertexBuffer = nullptr;
 	_pIndexBuffer = nullptr;
 
-	_bRButtonClicked = false;
+	//_bRButtonClicked = false;
 
 	_vCameraPosition = TD_CAMERA_POSITION;
 	_fCameraAngle = 0.0f;
 
 	// TD Objects init
 	_pMap = new TDMap();
-	_pPortal = new TDPortal(_pMap->getPosX(), _pMap->getPosY(), _pMap->getPosZ());
 
-	int nLastTileIndex = _pMap->getNumCube() - 1;
-	_pMonster = new TDAirMonster(_pMap->getPosX(nLastTileIndex), 
-							  _pMap->getPosY(nLastTileIndex), 
-							  _pMap->getPosZ(nLastTileIndex));
+	D3DXVECTOR3 mapPosition = _pMap->getPosition();
+	_pPortal = new TDPortal(mapPosition.x, mapPosition.y, mapPosition.z);
+
+	D3DXVECTOR3 mapPosition2 = _pMap->getEndPosition();
+	_pMonster = new TDAirMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
 	_pMonster->setPortalPosition(_pPortal->getPosition());
 }
 
@@ -81,7 +80,7 @@ VOID TowerDefense::Cleanup() {
 	if (_pPortal != nullptr)
 		delete _pPortal;
 }
-VOID TowerDefense::Render(float fTimeDelta) {
+VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
 		return;
 
@@ -122,7 +121,7 @@ HRESULT TowerDefense::SetUp() {
 	}
 	return S_OK;
 }
-HRESULT TowerDefense::initVertexBuffer(D3DCOLOR color) {
+HRESULT TowerDefense::initVertexBuffer(const TDObject* pObject) {
 	// create vertex buffer
 	if (FAILED(_pd3dDevice->CreateVertexBuffer(
 		TD_NUM_VERTICES * sizeof(Vertex),
@@ -135,19 +134,21 @@ HRESULT TowerDefense::initVertexBuffer(D3DCOLOR color) {
 
 	// set vertex buffer
 	Vertex* pVertices;
+	D3DCOLOR color = pObject->getColor();
+	D3DXVECTOR3 lb = pObject->getLowerBound(), ub = pObject->getUpperBound();
 	_pVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
 
 	// front face
-	pVertices[0] = Vertex(-0.5f, 0.5f, -0.5f, color);
-	pVertices[1] = Vertex(0.5f, 0.5f, -0.5f, color);
-	pVertices[2] = Vertex(-0.5f, -0.5f, -0.5f, color);
-	pVertices[3] = Vertex(0.5f, -0.5f, -0.5f, color);
+	pVertices[0] = Vertex(lb.x, ub.y, lb.z, color);
+	pVertices[1] = Vertex(ub.x, ub.y, lb.z, color);
+	pVertices[2] = Vertex(lb.x, lb.y, lb.z, color);
+	pVertices[3] = Vertex(ub.x, lb.y, lb.z, color);
 
 	// back face
-	pVertices[4] = Vertex(-0.5f, 0.5f, 0.5f, color);
-	pVertices[5] = Vertex(0.5f, 0.5f, 0.5f, color);
-	pVertices[6] = Vertex(-0.5f, -0.5f, 0.5f, color);
-	pVertices[7] = Vertex(0.5f, -0.5f, 0.5f, color);
+	pVertices[4] = Vertex(lb.x, ub.y, ub.z, color);
+	pVertices[5] = Vertex(ub.x, ub.y, ub.z, color);
+	pVertices[6] = Vertex(lb.x, lb.y, ub.z, color);
+	pVertices[7] = Vertex(ub.x, lb.y, ub.z, color);
 
 	_pVertexBuffer->Unlock();
 
@@ -221,22 +222,17 @@ VOID TowerDefense::initViewSpace() {
 	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
 }
 
-VOID TowerDefense::Finalize() {
-	Cleanup();
-}
-
-VOID TowerDefense::drawObject(TDObject* pObject) {
-	int nRed = pObject->getRed(), nGreen = pObject->getGreen(), nBlue = pObject->getBlue();
-	initVertexBuffer(D3DCOLOR_XRGB(nRed, nGreen, nBlue));
+VOID TowerDefense::drawObject(const TDObject* pObject) {
+	initVertexBuffer(pObject);
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 
 	D3DXMATRIX worldMatrix;
-	for (int i = 0; i < pObject->getNumCube(); i++) {
-		D3DXMatrixTranslation(&worldMatrix, pObject->getPosX(i), pObject->getPosY(i), pObject->getPosZ(i));
-		_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
+	D3DXVECTOR3 position = pObject->getPosition();
+	D3DXMatrixTranslation(&worldMatrix, position.x, position.y, position.z);
+	_pd3dDevice->SetTransform(D3DTS_WORLD, &worldMatrix);
 
-		_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
-	}
+	_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
+
 }
 VOID TowerDefense::doTowerDefense() {
 	_pMonster->moveToPortal();
@@ -247,22 +243,22 @@ VOID TowerDefense::doTowerDefense() {
 	}
 }
 
-VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
-	_bRButtonClicked = bButtonClicked;
-	_nClickPosX = nClickPosX;
-}
-VOID TowerDefense::SetCamera(short nClickPosX) {
-	if (!_bRButtonClicked) return;
-
-	D3DXMATRIX rotationMatrix;
-	if (nClickPosX > _nClickPosX) {
-		_fCameraAngle -= TD_CAMERA_ROTATION;
-	}
-	else if(nClickPosX < _nClickPosX) {
-		_fCameraAngle += TD_CAMERA_ROTATION;
-	}
-	D3DXMatrixRotationY(&rotationMatrix, _fCameraAngle);
-	D3DXVec3TransformNormal(&_vCameraPosition, &_vCameraPosition, &rotationMatrix);
-	initViewSpace();
-	_nClickPosX = nClickPosX;
-}
+//VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
+//	_bRButtonClicked = bButtonClicked;
+//	_nClickPosX = nClickPosX;
+//}
+//VOID TowerDefense::SetCamera(short nClickPosX) {
+//	if (!_bRButtonClicked) return;
+//
+//	D3DXMATRIX rotationMatrix;
+//	if (nClickPosX > _nClickPosX) {
+//		_fCameraAngle -= TD_CAMERA_ROTATION;
+//	}
+//	else if(nClickPosX < _nClickPosX) {
+//		_fCameraAngle += TD_CAMERA_ROTATION;
+//	}
+//	D3DXMatrixRotationY(&rotationMatrix, _fCameraAngle);
+//	D3DXVec3TransformNormal(&_vCameraPosition, &_vCameraPosition, &rotationMatrix);
+//	initViewSpace();
+//	_nClickPosX = nClickPosX;
+//}
