@@ -236,6 +236,8 @@ VOID TowerDefense::drawTowerDefense() {
 	}
 }
 VOID TowerDefense::drawObject(const TDObject* pObject) {
+	if (pObject == nullptr) return;
+
 	initVertexBuffer(pObject);
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
 
@@ -249,15 +251,21 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 }
 VOID TowerDefense::doTowerDefense() {
 	// move objects
-	_pMonster->moveToPortal();
-	_pTower->moveMissile();
+	if(_pTower != nullptr)		_pTower->moveMissile();
+	if (_pMonster != nullptr) {
+		_pMonster->moveToPortal();
 
-	// check collision
-	if (_pPortal->collideWith(_pMonster)) {
-		MessageBox(0, L"collision!", 0, 0);
-		delete _pMonster;
-		_pMonster = nullptr;
-		DestroyWindow(_pWindow);
+		// check collision
+		if (_pPortal->collideWith(_pMonster)) {
+			MessageBox(0, L"collision!", 0, 0);
+			delete _pMonster;
+			_pMonster = nullptr;
+			DestroyWindow(_pWindow);
+		}
+		if (_pTower->handleCollideWith(_pMonster)) {
+			delete _pMonster;
+			_pMonster = nullptr;
+		}
 	}
 }
 
