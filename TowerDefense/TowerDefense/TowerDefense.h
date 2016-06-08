@@ -62,7 +62,7 @@ private:
 
 	struct Vertex {
 		Vertex() {}
-		Vertex(float x, float y, float z, DWORD color) {
+		Vertex(float x, float y, float z, DWORD color = 0) {
 			_x = x, _y = y, _z = z;
 			_color = color;
 		}
@@ -71,7 +71,6 @@ private:
 		D3DCOLOR _color; // 32bit color:ARGB
 		static const DWORD FVF;
 	};
-
 
 	VOID init();
 	HRESULT initVertexBuffer(D3DCOLOR color);
