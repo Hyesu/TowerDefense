@@ -16,15 +16,16 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 		return 0;
-	/*case WM_RBUTTONDOWN:
+	case WM_RBUTTONDOWN:
 		TowerDefense::getInstance()->SetRButton(true, LOWORD(lParam));
 		return 0;
 	case WM_RBUTTONUP:
 		TowerDefense::getInstance()->SetRButton(false, LOWORD(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		TowerDefense::getInstance()->SetCamera(LOWORD(lParam));
-		return 0;*/
+		if(TowerDefense::getInstance()->GetRButton())
+			TowerDefense::getInstance()->SetCamera(LOWORD(lParam));
+		return 0;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);

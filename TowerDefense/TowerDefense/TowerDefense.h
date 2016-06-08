@@ -30,7 +30,7 @@
 #define TD_PROJECTION_NEAR		1.0f
 #define TD_PROJECTION_FAR		1000.0f
 
-#define TD_CAMERA_ROTATION		0.1f
+#define TD_CAMERA_ROTATION		0.05f
 
 #define TD_RENDER_INTERVAL		100		// 100 ms interval
 #define TD_RENDER_TIMER_ID		0x200
@@ -57,8 +57,8 @@ private:
 
 	// Window Variables: window, messages, ...
 	HWND _pWindow;
-	/*bool _bRButtonClicked;
-	short _nClickPosX;*/
+	bool _bRButtonClicked;
+	short _nClickPosX;
 
 
 	struct Vertex {
@@ -77,7 +77,7 @@ private:
 	HRESULT initVertexBuffer(const TDObject* pObject);
 	HRESULT initIndexBuffer();
 	HRESULT initCamera();
-	VOID initViewSpace();
+	VOID initViewSpace(D3DXVECTOR3 vCameraPosition);
 
 	VOID drawObject(const TDObject* pObject);
 	VOID doTowerDefense();
@@ -99,8 +99,9 @@ public:
 
 	HRESULT SetUp();
 
-	/*VOID SetRButton(bool bButtonClicked, short nClickPosX);
-	VOID SetCamera(short nClickPosX);*/
+	VOID SetRButton(bool bButtonClicked, short nClickPosX);
+	VOID SetCamera(short nClickPosX);
+	bool GetRButton() const;
 };
 
 

@@ -11,7 +11,7 @@ VOID TowerDefense::init() {
 	_pVertexBuffer = nullptr;
 	_pIndexBuffer = nullptr;
 
-	//_bRButtonClicked = false;
+	_bRButtonClicked = false;
 
 	_vCameraPosition = TD_CAMERA_POSITION;
 	_fCameraAngle = 0.0f;
@@ -202,7 +202,7 @@ HRESULT TowerDefense::initIndexBuffer() {
 	return S_OK;
 }
 HRESULT TowerDefense::initCamera() {
-	initViewSpace();
+	initViewSpace(TD_CAMERA_POSITION);
 
 	// set projection
 	D3DXMATRIX projectionMatrix;
@@ -216,13 +216,12 @@ HRESULT TowerDefense::initCamera() {
 
 	return S_OK;
 }
-VOID TowerDefense::initViewSpace() {
-	D3DXVECTOR3 cameraPosition = _vCameraPosition;
+VOID TowerDefense::initViewSpace(D3DXVECTOR3 vCameraPosition) {
 	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
 	D3DXVECTOR3 upVector = TD_WORLD_UP_VECTOR;
 
 	D3DXMATRIX viewMatrix;
-	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &targetPosition, &upVector);
+	D3DXMatrixLookAtLH(&viewMatrix, &vCameraPosition, &targetPosition, &upVector);
 	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
 }
 
@@ -247,22 +246,26 @@ VOID TowerDefense::doTowerDefense() {
 	}
 }
 
-//VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
-//	_bRButtonClicked = bButtonClicked;
-//	_nClickPosX = nClickPosX;
-//}
-//VOID TowerDefense::SetCamera(short nClickPosX) {
-//	if (!_bRButtonClicked) return;
-//
-//	D3DXMATRIX rotationMatrix;
-//	if (nClickPosX > _nClickPosX) {
-//		_fCameraAngle -= TD_CAMERA_ROTATION;
-//	}
-//	else if(nClickPosX < _nClickPosX) {
-//		_fCameraAngle += TD_CAMERA_ROTATION;
-//	}
-//	D3DXMatrixRotationY(&rotationMatrix, _fCameraAngle);
-//	D3DXVec3TransformNormal(&_vCameraPosition, &_vCameraPosition, &rotationMatrix);
-//	initViewSpace();
-//	_nClickPosX = nClickPosX;
-//}
+VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
+	_bRButtonClicked = bButtonClicked;
+	_nClickPosX = nClickPosX;
+}
+VOID TowerDefense::SetCamera(short nClickPosX) {
+	if (!_bRButtonClicked) return;
+
+	D3DXMATRIX rotationMatrix;
+	if (nClickPosX > _nClickPosX) {
+		_fCameraAngle += TD_CAMERA_ROTATION;
+	}
+	else if(nClickPosX < _nClickPosX) {
+		_fCameraAngle -= TD_CAMERA_ROTATION;
+	}
+	D3DXMatrixRotationY(&rotationMatrix, _fCameraAngle);
+	D3DXVECTOR3 rotatedPosition;
+	D3DXVec3TransformNormal(&rotatedPosition, &TD_CAMERA_POSITION, &rotationMatrix);
+	initViewSpace(rotatedPosition);
+	_nClickPosX = nClickPosX;
+}
+bool TowerDefense::GetRButton() const {
+	return _bRButtonClicked;
+}
