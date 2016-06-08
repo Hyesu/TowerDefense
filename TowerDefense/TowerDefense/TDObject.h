@@ -19,9 +19,9 @@
 class TDObject {
 private:
 	D3DCOLOR _color;
-	D3DXVECTOR3 _vLowerBound, _vUpperBound;		// object lower bound and upper bound
 
 protected:
+	D3DXVECTOR3 _vLowerBound, _vUpperBound;		// object lower bound and upper bound
 	D3DXVECTOR3 _vPosition1, _vPosition2;
 
 public:

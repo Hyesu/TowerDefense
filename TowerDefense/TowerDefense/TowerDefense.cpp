@@ -25,6 +25,10 @@ VOID TowerDefense::init() {
 	D3DXVECTOR3 mapPosition2 = _pMap->getEndPosition();
 	_pMonster = new TDAirMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
 	_pMonster->setPortalPosition(_pPortal->getPosition());
+
+	// tower create should be changed later(by L button click event handler)
+	D3DXVECTOR3 tempMapPosition = mapPosition + D3DXVECTOR3(_pMap->getLengthX() * 0.3f, 0, _pMap->getLengthZ() * 0.7f);
+	_pTower = new TDAirTower(tempMapPosition.x, tempMapPosition.y, tempMapPosition.z);
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -64,23 +68,17 @@ HRESULT TowerDefense::InitD3D(HWND hWnd) {
 	return S_OK;
 }
 VOID TowerDefense::Cleanup() {
-	if (_pd3dDevice != nullptr)
-		_pd3dDevice->Release();
+	// release direct3d objects
+	if (_pd3dDevice != nullptr)		_pd3dDevice->Release();
+	if (_pD3D != nullptr)			_pD3D->Release();
+	if (_pVertexBuffer != nullptr)	_pVertexBuffer->Release();
+	if (_pIndexBuffer != nullptr)	_pIndexBuffer->Release();
 
-	if (_pD3D != nullptr)
-		_pD3D->Release();
-
-	if (_pVertexBuffer != nullptr)
-		_pVertexBuffer->Release();
-
-	if (_pIndexBuffer != nullptr)
-		_pIndexBuffer->Release();
-
-	if (_pMap != nullptr)
-		delete _pMap;
-
-	if (_pPortal != nullptr)
-		delete _pPortal;
+	// delete tower defense objects
+	if (_pMap != nullptr)			delete _pMap;
+	if (_pPortal != nullptr)		delete _pPortal;
+	if (_pMonster != nullptr)		delete _pMonster;
+	if (_pTower != nullptr)			delete _pTower;
 
 	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
 }
@@ -102,6 +100,7 @@ VOID TowerDefense::Render() {
 
 		// draw objects in game
 		drawObject(_pMap);
+		drawObject(_pTower);
 		drawObject(_pPortal);
 		drawObject(_pMonster);
 
@@ -242,6 +241,7 @@ VOID TowerDefense::doTowerDefense() {
 	if (_pPortal->collideWith(_pMonster)) {
 		MessageBox(0, L"collision!", 0, 0);
 		delete _pMonster;
+		_pMonster = nullptr;
 		DestroyWindow(_pWindow);
 	}
 }

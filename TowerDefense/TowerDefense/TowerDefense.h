@@ -10,6 +10,7 @@
 #include "TDMap.h"
 #include "TDPortal.h"
 #include "TDAirMonster.h"
+#include "TDAirTower.h"
 
 //-----------------------------------------------------------------------------
 // Constants
@@ -54,6 +55,7 @@ private:
 	TDMap* _pMap;
 	TDPortal* _pPortal;
 	TDMonster* _pMonster;
+	TDTower* _pTower;
 
 	// Window Variables: window, messages, ...
 	HWND _pWindow;
