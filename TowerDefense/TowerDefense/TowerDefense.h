@@ -23,12 +23,12 @@
 #define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
 #define TD_WINDOW_TITLE			(L"Tower Defense")
 #define TD_WINDOW_WIDTH			800
-#define TD_WINDOW_HEIGHT		600
+#define TD_WINDOW_HEIGHT		800
 
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
 
-#define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 5.0f, -10.0f)
+#define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 15.0f, -15.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
 #define TD_WORLD_UP_VECTOR		D3DXVECTOR3(0.0f, 1.0f,  0.0f)
 
@@ -83,6 +83,10 @@ private:
 		static const DWORD FVF;
 	};
 	struct Ray {
+		Ray(D3DXVECTOR3 vOrigin, D3DXVECTOR3 vDirection) {
+			_vOrigin = vOrigin;
+			_vDirection = vDirection;
+		}
 		D3DXVECTOR3 _vOrigin, _vDirection;
 	};
 
@@ -102,8 +106,7 @@ private:
 	VOID createTower();
 
 	Ray getPickingRay(int nScreenX, int nScreenY);
-	VOID transformRayToWorld(Ray* ray);
-	bool isIntersect(Ray* ray, TDObject* pObject);
+	Ray transformRayToWorld(Ray* ray);
 
 	
 public:

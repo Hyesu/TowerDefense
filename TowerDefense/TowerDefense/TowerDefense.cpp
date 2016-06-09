@@ -310,8 +310,18 @@ VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
 	Ray ray = getPickingRay(nScreenX, nScreenY);
 	transformRayToWorld(&ray);
 
-	if (D3DXBoxBoundProbe(&_pMap->getPosition(), &_pMap->getEndPosition(), &ray._vOrigin, &ray._vDirection))
-		MessageBox(0, L"map click!", 0, 0);
+	D3DXVECTOR3 mapPosition = _pMap->getPosition();
+	for (int i = 0; i < _pMap->getRow(); i++) {
+		for (int j = 0; j < _pMap->getCol(); j++) {
+			if (D3DXBoxBoundProbe(&(mapPosition + D3DXVECTOR3(1.0f * j, 0.0f, 1.0f * i)), 
+				&(mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1))), &ray._vOrigin, &ray._vDirection)) {
+				if (_pMap->isAvailableTile(i, j)) {
+
+					return;
+				}
+			}
+		}
+	}	
 }
 TowerDefense::Ray TowerDefense::getPickingRay(int nScreenX, int nScreenY) {
 	D3DVIEWPORT9 viewport;
@@ -322,14 +332,10 @@ TowerDefense::Ray TowerDefense::getPickingRay(int nScreenX, int nScreenY) {
 
 	float px = (((2.0f * nScreenX) / viewport.Width) - 1.0f) / projection(0, 0);
 	float py = (((-2.0f * nScreenY) / viewport.Height) + 1.0f) / projection(1, 1);
-
-	Ray ray;
-	ray._vOrigin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	ray._vDirection = D3DXVECTOR3(px, py, 1.0f);
-
-	return ray;
+	
+	return Ray(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(px, py, 1.0f));
 }
-VOID TowerDefense::transformRayToWorld(Ray* ray) {
+TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
 	// get inverse of view matrix
 	D3DXMATRIX view;
 	_pd3dDevice->GetTransform(D3DTS_VIEW, &view);
@@ -340,5 +346,5 @@ VOID TowerDefense::transformRayToWorld(Ray* ray) {
 	D3DXVec3TransformCoord(&ray->_vOrigin, &ray->_vOrigin, &viewInverse);
 	D3DXVec3TransformNormal(&ray->_vDirection, &ray->_vDirection, &viewInverse);
 
-	D3DXVec3Normalize(&ray->_vDirection, &ray->_vDirection);
+	return Ray(ray->_vOrigin, ray->_vDirection);
 }
