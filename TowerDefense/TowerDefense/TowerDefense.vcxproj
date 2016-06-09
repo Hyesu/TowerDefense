@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -152,18 +152,24 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TDAirMonster.cpp" />
+    <ClCompile Include="TDAirTower.cpp" />
     <ClCompile Include="TDMap.cpp" />
+    <ClCompile Include="TDMissile.cpp" />
     <ClCompile Include="TDMonster.cpp" />
     <ClCompile Include="TDObject.cpp" />
     <ClCompile Include="TDPortal.cpp" />
+    <ClCompile Include="TDTower.cpp" />
     <ClCompile Include="TowerDefense.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TDAirMonster.h" />
+    <ClInclude Include="TDAirTower.h" />
     <ClInclude Include="TDMap.h" />
+    <ClInclude Include="TDMissile.h" />
     <ClInclude Include="TDMonster.h" />
     <ClInclude Include="TDObject.h" />
     <ClInclude Include="TDPortal.h" />
+    <ClInclude Include="TDTower.h" />
     <ClInclude Include="TowerDefense.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

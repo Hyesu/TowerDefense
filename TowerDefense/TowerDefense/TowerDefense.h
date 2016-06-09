@@ -70,6 +70,7 @@ private:
 	short _nClickPosX;
 
 
+	// Structures
 	struct Vertex {
 		Vertex() {}
 		Vertex(float x, float y, float z, DWORD color = 0) {
@@ -81,7 +82,12 @@ private:
 		D3DCOLOR _color; // 32bit color:ARGB
 		static const DWORD FVF;
 	};
+	struct Ray {
+		D3DXVECTOR3 _vOrigin, _vDirection;
+	};
 
+
+	// Functions 
 	VOID init();
 	HRESULT initVertexBuffer(const TDObject* pObject);
 	HRESULT initIndexBuffer();
@@ -94,6 +100,10 @@ private:
 	VOID doTowerDefense();
 
 	VOID createTower();
+
+	Ray getPickingRay(int nScreenX, int nScreenY);
+	VOID transformRayToWorld(Ray* ray);
+	bool isIntersect(Ray* ray, TDObject* pObject);
 
 	
 public:
@@ -117,6 +127,7 @@ public:
 	bool GetRButton() const;
 
 	VOID createMissile();
+	VOID handlePicking(int nScreenX, int nScreenY);
 };
 
 
