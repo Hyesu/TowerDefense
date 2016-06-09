@@ -10,14 +10,14 @@
 #define MISSILE_LENGTH				1.0f
 
 #define MISSILE_MOVE_UNIT			0.1f
-#define MISSLE_DEFAULT_DIRECTION	D3DXVECTOR3(1.0f, 0.0f, -1.0f)
+#define MISSILE_NUM_DIRECTION		8
 
 class TDMissile : public TDObject {
 private:
 	D3DXVECTOR3 _vDirection;
 
 public:
-	TDMissile(float fTowerPosX, float fTowerPosY, float fTowerPosZ);
+	TDMissile(float fTowerPosX, float fTowerPosY, float fTowerPosZ, D3DXVECTOR3 vDirection);
 
 	bool move(D3DXVECTOR3 vBoundary1, D3DXVECTOR3 vBoundary2);
 };

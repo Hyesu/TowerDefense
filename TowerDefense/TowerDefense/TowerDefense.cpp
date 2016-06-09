@@ -322,6 +322,14 @@ VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
 	Ray ray = getPickingRay(nScreenX, nScreenY);
 	transformRayToWorld(&ray);
 
+	// check tower click
+	for (int i = 0; i < _pTowerList->size(); i++) {
+		TDTower* tower = _pTowerList->at(i);
+		if (D3DXBoxBoundProbe(&tower->getPosition(), &tower->getEndPosition(), &ray._vOrigin, &ray._vDirection))
+			tower->changeMissileDirection();
+	}
+
+	// check tile click
 	D3DXVECTOR3 mapPosition = _pMap->getPosition();
 	for (int i = 0; i < _pMap->getRow(); i++) {
 		for (int j = 0; j < _pMap->getCol(); j++) {

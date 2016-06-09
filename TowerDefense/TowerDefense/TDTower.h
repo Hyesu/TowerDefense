@@ -21,6 +21,9 @@ private:
 	std::list<TDMissile*>* _pMissileList;
 	D3DXVECTOR3 _vMissileBoundary1, _vMissileBoundary2;
 
+	int _nMissileDirectionIndex;
+
+
 public:
 	TDTower(D3DXVECTOR3 vTowerPosition, D3DXVECTOR3 vMapPosition1, D3DXVECTOR3 vMapPosition2);
 	~TDTower();
@@ -30,6 +33,10 @@ public:
 	bool handleCollideWith(const TDObject* pMonster);
 
 	std::list<TDMissile*>* getMissileList() const;
+
+	void changeMissileDirection();
+
+	const static D3DXVECTOR3 s_vMissileDirection[];
 };
 
 #endif

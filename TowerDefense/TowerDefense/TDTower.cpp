@@ -1,5 +1,16 @@
 #include "TDTower.h"
 
+const D3DXVECTOR3 TDTower::s_vMissileDirection[] = {
+	D3DXVECTOR3(1.0f, 0.0f, -1.0f),
+	D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+	D3DXVECTOR3(-1.0f, 0.0f, -1.0f),
+	D3DXVECTOR3(-1.0f, 0.0f, 0.0f),
+	D3DXVECTOR3(-1.0f, 0.0f, 1.0f),
+	D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+	D3DXVECTOR3(1.0f, 0.0f, 1.0f),
+	D3DXVECTOR3(1.0f, 0.0f, 0.0f)
+};
+
 TDTower::TDTower(D3DXVECTOR3 vTowerPositon, D3DXVECTOR3 vMapPosition1, D3DXVECTOR3 vMapPosition2) :
 	TDObject::TDObject(TOWER_LENGTH, TOWER_LENGTH, TOWER_LENGTH,
 		TOWER_COLOR_RED, TOWER_COLOR_GREEN, TOWER_COLOR_BLUE) {
@@ -12,13 +23,16 @@ TDTower::TDTower(D3DXVECTOR3 vTowerPositon, D3DXVECTOR3 vMapPosition1, D3DXVECTO
 
 	_vMissileBoundary1 = vMapPosition1;
 	_vMissileBoundary2 = vMapPosition2;
+
+	_nMissileDirectionIndex = 0;
 }
 TDTower::~TDTower() {
 	if (_pMissileList != nullptr) delete _pMissileList;
 }
 
 void TDTower::createMissile() {
-	_pMissileList->push_back(new TDMissile(_vPosition2.x - TOWER_LENGTH, _vPosition2.y - TOWER_LENGTH, _vPosition2.z - TOWER_LENGTH));
+	_pMissileList->push_back(new TDMissile(_vPosition2.x - TOWER_LENGTH, _vPosition2.y - TOWER_LENGTH, 
+		_vPosition2.z - TOWER_LENGTH, s_vMissileDirection[_nMissileDirectionIndex]));
 }
 void TDTower::moveMissile() {
 	if (_pMissileList->empty()) return;
@@ -53,4 +67,8 @@ bool TDTower::handleCollideWith(const TDObject* pMonster) {
 			++it;
 	}
 	return false;
+}
+
+void TDTower::changeMissileDirection() {
+	_nMissileDirectionIndex = (_nMissileDirectionIndex + 1) % MISSILE_NUM_DIRECTION;
 }
