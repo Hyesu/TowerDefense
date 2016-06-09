@@ -32,6 +32,10 @@ void TDMap::setPortalAndMonster(D3DXVECTOR3 vPortal, D3DXVECTOR3 vMonster) {
 		_bAvailable[i][j] = false;
 	}
 }
+void TDMap::setAvailable(int row, int col) {
+	_bAvailable[row][col] = false;
+}
+
 bool TDMap::isAvailableTile(int row, int col) const {
 	return _bAvailable[row][col];
 }

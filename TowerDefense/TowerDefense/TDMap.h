@@ -25,6 +25,8 @@ public:
 	TDMap();
 
 	void setPortalAndMonster(D3DXVECTOR3 vPortal, D3DXVECTOR3 vMonster);
+	void setAvailable(int row, int col);
+
 	bool isAvailableTile(int row, int col) const;
 	int getRow() const;
 	int getCol() const;

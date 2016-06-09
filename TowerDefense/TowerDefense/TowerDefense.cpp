@@ -330,7 +330,8 @@ VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
 
 			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
 				if (_pMap->isAvailableTile(i, j)) {
-					createTower(lowerBound, true);
+					createTower(lowerBound, GetAsyncKeyState(VK_LSHIFT) & 0x8000);
+					_pMap->setAvailable(i, j);
 					return;
 				}
 			}
