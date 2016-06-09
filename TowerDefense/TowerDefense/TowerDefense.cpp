@@ -15,9 +15,6 @@ VOID TowerDefense::init() {
 
 	_vCameraPosition = TD_CAMERA_POSITION;
 	_fCameraAngle = 0.0f;
-
-	//debug
-	_pTower = nullptr;
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -67,13 +64,11 @@ VOID TowerDefense::Cleanup() {
 	if (_pMap != nullptr)			delete _pMap;
 	if (_pPortal != nullptr)		delete _pPortal;
 	if (_pMonster != nullptr)		delete _pMonster;
-	if (_pTower != nullptr) {
-		if (!_pTower->getMissileList()->empty())
-			KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
-
-		delete _pTower;
-		KillTimer(_pWindow, TD_RENDER_TIMER_ID);
+	if (_pTowerList != nullptr) {
+		KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
+		delete _pTowerList;
 	}
+	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
 }
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
@@ -109,6 +104,7 @@ HRESULT TowerDefense::SetUp() {
 		MessageBox(0, L"InitCamera Failed", 0, 0);
 		return E_FAIL;
 	}
+	
 	initTDObjects();
 
 	return S_OK;
@@ -223,19 +219,25 @@ VOID TowerDefense::initTDObjects() {
 	_pMonster->setPortalPosition(_pPortal->getPosition());
 
 	_pMap->setPortalAndMonster(_pPortal->getPosition(), _pMonster->getPosition());
+
+	_pTowerList = new std::vector<TDTower*>();
 }
 
 VOID TowerDefense::drawTowerDefense() {
 	drawObject(_pMap);
-	drawObject(_pTower);
 	drawObject(_pPortal);
 	drawObject(_pMonster);
 
-	if (_pTower == nullptr) return;
-	std::list<TDMissile*>* pMissileList = _pTower->getMissileList();
-	if (pMissileList->empty()) return;
-	for (std::list<TDMissile*>::iterator it = pMissileList->begin(); it != pMissileList->end(); ++it) {
-		drawObject((TDMissile*) (*it));
+	for (int i = 0; i < _pTowerList->size(); i++) {
+		TDTower* tower = _pTowerList->at(i);
+
+		drawObject(tower);
+
+		std::list<TDMissile*>* pMissileList = tower->getMissileList();
+		if (pMissileList->empty()) return;
+		for (std::list<TDMissile*>::iterator it = pMissileList->begin(); it != pMissileList->end(); ++it) {
+			drawObject((TDMissile*)(*it));
+		}
 	}
 }
 VOID TowerDefense::drawObject(const TDObject* pObject) {
@@ -254,7 +256,6 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 }
 VOID TowerDefense::doTowerDefense() {
 	// move objects
-	if(_pTower != nullptr)		_pTower->moveMissile();
 	if (_pMonster != nullptr) {
 		_pMonster->moveToPortal();
 
@@ -264,10 +265,16 @@ VOID TowerDefense::doTowerDefense() {
 			delete _pMonster;
 			_pMonster = nullptr;
 			DestroyWindow(_pWindow);
-		}
-		if (_pTower != nullptr && _pTower->handleCollideWith(_pMonster)) {
+		}		
+	}
+	for (int i = 0; i < _pTowerList->size(); i++) {
+		TDTower* tower = _pTowerList->at(i);
+		tower->moveMissile();
+
+		if (_pMonster != nullptr && tower->handleCollideWith(_pMonster)) {
 			delete _pMonster;
 			_pMonster = nullptr;
+			continue;
 		}
 	}
 }
@@ -297,18 +304,18 @@ bool TowerDefense::GetRButton() const {
 }
 
 VOID TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
-	if (_pTower != nullptr) return; // if tower list isthere, delete this sentence
+	if(_pTowerList->empty())
+		SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
 
-	if(bAirTower)
-		_pTower = new TDAirTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
+	if (bAirTower)
+		_pTowerList->push_back(new TDAirTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition()));
 	else
-		_pTower = new TDTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
+		_pTowerList->push_back(new TDTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition()));
 
-	SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
 }
 VOID TowerDefense::createMissile() {
-	if (_pTower == nullptr) return;
-	_pTower->createMissile();
+	for (int i = 0; i < _pTowerList->size(); i++)
+		_pTowerList->at(i)->createMissile();
 }
 
 VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
@@ -323,7 +330,7 @@ VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
 
 			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
 				if (_pMap->isAvailableTile(i, j)) {
-					createTower(lowerBound);
+					createTower(lowerBound, true);
 					return;
 				}
 			}

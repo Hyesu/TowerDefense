@@ -12,7 +12,7 @@
 #define PORTAL_DEFAULT_POS_Z	0.0f
 
 #define PORTAL_LENGTH_X			1.0f
-#define PORTAL_LENGTH_Y			2.0f
+#define PORTAL_LENGTH_Y			3.0f
 #define PORTAL_LENGTH_Z			1.0f
 
 class TDPortal : public TDObject {

@@ -3,6 +3,8 @@
 
 #include "TDMonster.h"
 
+#define MONSTER_AIR_OFFSET 2.0f
+
 class TDAirMonster : public TDMonster {
 private:
 

@@ -7,6 +7,7 @@
 #pragma warning( default : 4996 )
 #include <d3dx9.h>
 
+#include <vector>
 #include <list>
 
 #include "TDMap.h"
@@ -38,7 +39,7 @@
 
 #define TD_CAMERA_ROTATION		0.05f
 
-#define TD_RENDER_INTERVAL		50		// 50 ms interval
+#define TD_RENDER_INTERVAL		50	
 #define TD_RENDER_TIMER_ID		1
 #define TD_MISSILE_INTERVAL		1500
 #define TD_MISSILE_TIMER_ID		2
@@ -62,7 +63,7 @@ private:
 	TDMap* _pMap;
 	TDPortal* _pPortal;
 	TDMonster* _pMonster;
-	TDTower* _pTower;
+	std::vector<TDTower*>* _pTowerList;
 
 	// Window Variables: window, messages, ...
 	HWND _pWindow;
