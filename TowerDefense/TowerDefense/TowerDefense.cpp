@@ -219,6 +219,8 @@ VOID TowerDefense::initTDObjects() {
 	_pMonster = new TDAirMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
 	_pMonster->setPortalPosition(_pPortal->getPosition());
 
+	_pMap->setPortalAndMonster(_pPortal->getPosition(), _pMonster->getPosition());
+
 	// tower create should be changed later(by L button click event handler)
 	createTower();
 }

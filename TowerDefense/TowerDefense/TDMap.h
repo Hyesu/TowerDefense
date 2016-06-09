@@ -5,7 +5,10 @@
 
 #define MAP_COLOR		64
 
-#define MAP_LENGTH_X	6.0f
+#define MAP_NUM_ROW		6
+#define MAP_NUM_COL		(MAP_NUM_ROW)
+
+#define MAP_LENGTH_X	(1.0f * MAP_NUM_ROW)
 #define MAP_LENGTH_Y	1.0f
 #define MAP_LENGTH_Z	(MAP_LENGTH_X)
 
@@ -14,8 +17,13 @@
 #define MAP_POS_Z		(MAP_POS_X)
 
 class TDMap : public TDObject{
+private:
+	bool _bAvailable[MAP_NUM_ROW][MAP_NUM_COL];
+
 public:
 	TDMap();
+
+	void setPortalAndMonster(D3DXVECTOR3 vPortal, D3DXVECTOR3 vMonster);
 };
 
 #endif
