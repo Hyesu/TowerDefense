@@ -15,6 +15,9 @@ VOID TowerDefense::init() {
 
 	_vCameraPosition = TD_CAMERA_POSITION;
 	_fCameraAngle = 0.0f;
+
+	//debug
+	_pTower = nullptr;
 }
 
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
@@ -220,9 +223,6 @@ VOID TowerDefense::initTDObjects() {
 	_pMonster->setPortalPosition(_pPortal->getPosition());
 
 	_pMap->setPortalAndMonster(_pPortal->getPosition(), _pMonster->getPosition());
-
-	// tower create should be changed later(by L button click event handler)
-	createTower();
 }
 
 VOID TowerDefense::drawTowerDefense() {
@@ -231,6 +231,7 @@ VOID TowerDefense::drawTowerDefense() {
 	drawObject(_pPortal);
 	drawObject(_pMonster);
 
+	if (_pTower == nullptr) return;
 	std::list<TDMissile*>* pMissileList = _pTower->getMissileList();
 	if (pMissileList->empty()) return;
 	for (std::list<TDMissile*>::iterator it = pMissileList->begin(); it != pMissileList->end(); ++it) {
@@ -258,13 +259,13 @@ VOID TowerDefense::doTowerDefense() {
 		_pMonster->moveToPortal();
 
 		// check collision
-		if (_pPortal->collideWith(_pMonster)) {
+		if (_pPortal != nullptr && _pPortal->collideWith(_pMonster)) {
 			MessageBox(0, L"collision!", 0, 0);
 			delete _pMonster;
 			_pMonster = nullptr;
 			DestroyWindow(_pWindow);
 		}
-		if (_pTower->handleCollideWith(_pMonster)) {
+		if (_pTower != nullptr && _pTower->handleCollideWith(_pMonster)) {
 			delete _pMonster;
 			_pMonster = nullptr;
 		}
@@ -295,9 +296,13 @@ bool TowerDefense::GetRButton() const {
 	return _bRButtonClicked;
 }
 
-VOID TowerDefense::createTower() {
-	D3DXVECTOR3 tempMapPosition = _pMap->getPosition() + D3DXVECTOR3(_pMap->getLengthX() * 0.3f, 0, _pMap->getLengthZ() * 0.7f);
-	_pTower = new TDAirTower(tempMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
+VOID TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
+	if (_pTower != nullptr) return; // if tower list isthere, delete this sentence
+
+	if(bAirTower)
+		_pTower = new TDAirTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
+	else
+		_pTower = new TDTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
 
 	SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
 }
@@ -313,10 +318,12 @@ VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
 	D3DXVECTOR3 mapPosition = _pMap->getPosition();
 	for (int i = 0; i < _pMap->getRow(); i++) {
 		for (int j = 0; j < _pMap->getCol(); j++) {
-			if (D3DXBoxBoundProbe(&(mapPosition + D3DXVECTOR3(1.0f * j, 0.0f, 1.0f * i)), 
-				&(mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1))), &ray._vOrigin, &ray._vDirection)) {
-				if (_pMap->isAvailableTile(i, j)) {
+			D3DXVECTOR3 lowerBound = mapPosition + D3DXVECTOR3(1.0f * j, 0.0f, 1.0f * i);
+			D3DXVECTOR3 upperBound = mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1));
 
+			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
+				if (_pMap->isAvailableTile(i, j)) {
+					createTower(lowerBound);
 					return;
 				}
 			}

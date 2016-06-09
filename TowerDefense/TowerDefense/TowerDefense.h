@@ -103,7 +103,7 @@ private:
 	VOID drawObject(const TDObject* pObject);
 	VOID doTowerDefense();
 
-	VOID createTower();
+	VOID createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
 
 	Ray getPickingRay(int nScreenX, int nScreenY);
 	Ray transformRayToWorld(Ray* ray);
