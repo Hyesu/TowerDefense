@@ -12,8 +12,7 @@ const D3DXVECTOR3 TDTower::s_vMissileDirection[] = {
 };
 
 TDTower::TDTower(D3DXVECTOR3 vTowerPositon, D3DXVECTOR3 vMapPosition1, D3DXVECTOR3 vMapPosition2) :
-	TDObject::TDObject(TOWER_LENGTH, TOWER_LENGTH, TOWER_LENGTH,
-		TOWER_COLOR_RED, TOWER_COLOR_GREEN, TOWER_COLOR_BLUE) {
+	TDObject(TOWER_LENGTH, TOWER_LENGTH, TOWER_LENGTH, TOWER_COLOR_RED, TOWER_COLOR_GREEN, TOWER_COLOR_BLUE) {
 	D3DXVECTOR3 towerPos = vTowerPositon;
 	towerPos.y += 1.0f;
 	_vPosition1 = towerPos;

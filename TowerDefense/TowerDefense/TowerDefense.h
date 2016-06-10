@@ -23,13 +23,13 @@
 //-----------------------------------------------------------------------------
 #define TD_BACKGROUND_COLOR		D3DCOLOR_XRGB(255, 255, 255)
 #define TD_WINDOW_TITLE			(L"Tower Defense")
-#define TD_WINDOW_WIDTH			800
-#define TD_WINDOW_HEIGHT		800
+#define TD_WINDOW_WIDTH			900
+#define TD_WINDOW_HEIGHT		900
 
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
 
-#define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 15.0f, -15.0f)
+#define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 15.0f, -20.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
 #define TD_WORLD_UP_VECTOR		D3DXVECTOR3(0.0f, 1.0f,  0.0f)
 

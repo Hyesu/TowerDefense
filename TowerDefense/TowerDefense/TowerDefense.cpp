@@ -167,7 +167,7 @@ HRESULT TowerDefense::initIndexBuffer() {
 
 	// left side
 	pIndices[12] = 4; pIndices[13] = 0; pIndices[14] = 6;
-	pIndices[15] = 6; pIndices[16] = 0; pIndices[17] = 3;
+	pIndices[15] = 6; pIndices[16] = 0; pIndices[17] = 2;
 
 	// right side
 	pIndices[18] = 1; pIndices[19] = 5; pIndices[20] = 3;
@@ -215,7 +215,7 @@ VOID TowerDefense::initTDObjects() {
 	_pPortal = new TDPortal(mapPosition.x, mapPosition.y, mapPosition.z);
 
 	D3DXVECTOR3 mapPosition2 = _pMap->getEndPosition();
-	_pMonster = new TDAirMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
+	_pMonster = new TDMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
 	_pMonster->setPortalPosition(_pPortal->getPosition());
 
 	_pMap->setPortalAndMonster(_pPortal->getPosition(), _pMonster->getPosition());
