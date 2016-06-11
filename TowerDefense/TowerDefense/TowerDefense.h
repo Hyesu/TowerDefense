@@ -42,7 +42,10 @@
 #define TD_RENDER_INTERVAL		50	
 #define TD_RENDER_TIMER_ID		1
 #define TD_MISSILE_INTERVAL		1500
-#define TD_MISSILE_TIMER_ID		2
+#define TD_MISSILE_TIMER_ID		(TD_RENDER_TIMER_ID + 1)
+#define TD_MONSTER_INTERVAL		2000
+#define TD_MONSTER_TIMER_ID		(TD_MISSILE_TIMER_ID + 1)
+#define TD_MAX_MONSTER			5
 
 
 // init game and handle direct3D
@@ -50,7 +53,6 @@ class TowerDefense
 {
 private:
 	static TowerDefense* _pInstance;
-	static const D3DXCOLOR _pColorList[];
 
 	LPDIRECT3D9				_pD3D;			// Used to create the D3DDevice
 	LPDIRECT3DDEVICE9		_pd3dDevice;	// Our rendering device
@@ -62,8 +64,10 @@ private:
 	// Tower Defense Game Variables
 	TDMap* _pMap;
 	TDPortal* _pPortal;
-	TDMonster* _pMonster;
 	std::vector<TDTower*>* _pTowerList;
+	std::list<TDMonster*>* _pMonsterList;
+
+	static int s_nMonsterCreate;
 
 	// Window Variables: window, messages, ...
 	HWND _pWindow;
@@ -131,6 +135,7 @@ public:
 	bool GetRButton() const;
 
 	VOID createMissile();
+	VOID createMonster();
 	VOID handlePicking(int nScreenX, int nScreenY);
 };
 

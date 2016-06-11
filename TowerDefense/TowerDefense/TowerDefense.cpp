@@ -1,6 +1,7 @@
 #include "TowerDefense.h"
 TowerDefense* TowerDefense::_pInstance = nullptr;
 const DWORD TowerDefense::Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+int TowerDefense::s_nMonsterCreate = 0;
 
 TowerDefense::TowerDefense() {
 	init();
@@ -63,7 +64,7 @@ VOID TowerDefense::Cleanup() {
 	// delete tower defense objects
 	if (_pMap != nullptr)			delete _pMap;
 	if (_pPortal != nullptr)		delete _pPortal;
-	if (_pMonster != nullptr)		delete _pMonster;
+	if (_pMonsterList != nullptr)		delete _pMonsterList;
 	if (_pTowerList != nullptr) {
 		KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
 		delete _pTowerList;
@@ -214,11 +215,10 @@ VOID TowerDefense::initTDObjects() {
 	D3DXVECTOR3 mapPosition = _pMap->getPosition();
 	_pPortal = new TDPortal(mapPosition.x, mapPosition.y, mapPosition.z);
 
-	D3DXVECTOR3 mapPosition2 = _pMap->getEndPosition();
-	_pMonster = new TDMonster(mapPosition2.x, mapPosition2.y, mapPosition2.z);
-	_pMonster->setPortalPosition(_pPortal->getPosition());
-
-	_pMap->setPortalAndMonster(_pPortal->getPosition(), _pMonster->getPosition());
+	_pMonsterList = new std::list<TDMonster*>();
+	createMonster();
+	_pMap->setPortalAndMonster(_pPortal->getPosition(), ((TDMonster*) (*_pMonsterList->begin()))->getPosition());
+	SetTimer(_pWindow, TD_MONSTER_TIMER_ID, TD_MONSTER_INTERVAL, nullptr);
 
 	_pTowerList = new std::vector<TDTower*>();
 }
@@ -226,8 +226,13 @@ VOID TowerDefense::initTDObjects() {
 VOID TowerDefense::drawTowerDefense() {
 	drawObject(_pMap);
 	drawObject(_pPortal);
-	drawObject(_pMonster);
 
+	// draw monsters
+	for (std::list<TDMonster*>::iterator it = _pMonsterList->begin(); it != _pMonsterList->end(); ++it) {
+		drawObject((TDMonster*)(*it));
+	}
+
+	// draw tower and missiles
 	for (int i = 0; i < _pTowerList->size(); i++) {
 		TDTower* tower = _pTowerList->at(i);
 
@@ -255,27 +260,37 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 
 }
 VOID TowerDefense::doTowerDefense() {
-	// move objects
-	if (_pMonster != nullptr) {
-		_pMonster->moveToPortal();
-
-		// check collision
-		if (_pPortal != nullptr && _pPortal->collideWith(_pMonster)) {
-			MessageBox(0, L"collision!", 0, 0);
-			delete _pMonster;
-			_pMonster = nullptr;
-			DestroyWindow(_pWindow);
-		}		
-	}
-	for (int i = 0; i < _pTowerList->size(); i++) {
+	// move missile
+	for (unsigned int i = 0; i < _pTowerList->size(); i++) {
 		TDTower* tower = _pTowerList->at(i);
 		tower->moveMissile();
+	}
 
-		if (_pMonster != nullptr && tower->handleCollideWith(_pMonster)) {
-			delete _pMonster;
-			_pMonster = nullptr;
-			continue;
+	// move monsters
+	for (std::list<TDMonster*>::iterator it = _pMonsterList->begin(); it != _pMonsterList->end(); ) {
+		TDMonster* pMonster = (TDMonster*)(*it);
+		pMonster->moveToPortal();
+
+		// check collision with portal
+		if (_pPortal != nullptr && _pPortal->collideWith(pMonster)) {
+			MessageBox(0, L"collision!", 0, 0);
+			DestroyWindow(_pWindow);
 		}
+
+		bool bMonsterKillCondition = false;
+		// check collistion with missile
+		for (unsigned int i = 0; i < _pTowerList->size(); i++) {
+			TDTower* tower = _pTowerList->at(i);
+
+			if (tower->handleCollideWith(pMonster)) {
+				delete pMonster;
+				it = _pMonsterList->erase(it);
+				bMonsterKillCondition = true;
+				break;
+			}
+		}			
+		if (!bMonsterKillCondition)
+			++it;
 	}
 }
 
@@ -316,6 +331,17 @@ VOID TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
 VOID TowerDefense::createMissile() {
 	for (int i = 0; i < _pTowerList->size(); i++)
 		_pTowerList->at(i)->createMissile();
+}
+VOID TowerDefense::createMonster() {
+	if (_pMap == nullptr || _pPortal == nullptr || _pMonsterList == nullptr) return;
+
+	D3DXVECTOR3 mapPosition = _pMap->getEndPosition();
+	s_nMonsterCreate++;
+	_pMonsterList->push_front(new TDMonster(mapPosition.x, mapPosition.y, mapPosition.z));
+	(*(_pMonsterList->begin()))->setPortalPosition(_pPortal->getPosition());
+
+	if (s_nMonsterCreate >= TD_MAX_MONSTER)
+		KillTimer(_pWindow, TD_MONSTER_TIMER_ID);
 }
 
 VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
