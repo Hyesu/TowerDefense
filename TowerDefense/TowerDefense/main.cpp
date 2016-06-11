@@ -20,6 +20,9 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case TD_MISSILE_TIMER_ID:
 			TowerDefense::getInstance()->createMissile();
 			break;
+		case TD_GAME_CLEAR_TIMER_ID:
+			TowerDefense::getInstance()->handleGameClear();
+			break;
 		}
 		return 0;
 	case WM_LBUTTONDOWN:

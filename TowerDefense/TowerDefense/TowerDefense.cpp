@@ -64,12 +64,17 @@ VOID TowerDefense::Cleanup() {
 	// delete tower defense objects
 	if (_pMap != nullptr)			delete _pMap;
 	if (_pPortal != nullptr)		delete _pPortal;
-	if (_pMonsterList != nullptr)		delete _pMonsterList;
+	if (_pMonsterList != nullptr) {
+		delete _pMonsterList;
+	}
 	if (_pTowerList != nullptr) {
-		KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
 		delete _pTowerList;
 	}
+	// kill timers
 	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
+	KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
+	KillTimer(_pWindow, TD_MONSTER_TIMER_ID);
+	KillTimer(_pWindow, TD_GAME_CLEAR_TIMER_ID);
 }
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
@@ -273,8 +278,7 @@ VOID TowerDefense::doTowerDefense() {
 
 		// check collision with portal
 		if (_pPortal != nullptr && _pPortal->collideWith(pMonster)) {
-			MessageBox(0, L"collision!", 0, 0);
-			DestroyWindow(_pWindow);
+			handleGameOver();
 		}
 
 		bool bMonsterKillCondition = false;
@@ -340,8 +344,10 @@ VOID TowerDefense::createMonster() {
 	_pMonsterList->push_front(new TDMonster(mapPosition.x, mapPosition.y, mapPosition.z));
 	(*(_pMonsterList->begin()))->setPortalPosition(_pPortal->getPosition());
 
-	if (s_nMonsterCreate >= TD_MAX_MONSTER)
+	if (s_nMonsterCreate >= TD_MAX_MONSTER) {
 		KillTimer(_pWindow, TD_MONSTER_TIMER_ID);
+		SetTimer(_pWindow, TD_GAME_CLEAR_TIMER_ID, TD_GAME_CLEAR_INTERVAL, nullptr);
+	}
 }
 
 VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
@@ -396,4 +402,19 @@ TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
 	D3DXVec3TransformNormal(&ray->_vDirection, &ray->_vDirection, &viewInverse);
 
 	return Ray(ray->_vOrigin, ray->_vDirection);
+}
+
+
+VOID TowerDefense::handleGameOver() {
+	MessageBox(0, L"GAME OVER!", L"GAME OVER", 0);
+	DestroyWindow(_pWindow);
+}
+VOID TowerDefense::handleGameClear() {
+	if (!_pMonsterList->empty()) return;
+
+	KillTimer(_pWindow, TD_GAME_CLEAR_TIMER_ID);
+	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
+
+	MessageBox(0, L"GAME CLEAR!", L"GAME CLEAR", 0);
+	DestroyWindow(_pWindow);
 }

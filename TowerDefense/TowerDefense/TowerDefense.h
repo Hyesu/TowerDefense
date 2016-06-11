@@ -46,6 +46,8 @@
 #define TD_MONSTER_INTERVAL		2000
 #define TD_MONSTER_TIMER_ID		(TD_MISSILE_TIMER_ID + 1)
 #define TD_MAX_MONSTER			5
+#define TD_GAME_CLEAR_TIMER_ID	(TD_MONSTER_TIMER_ID + 1)
+#define TD_GAME_CLEAR_INTERVAL	1000
 
 
 // init game and handle direct3D
@@ -110,6 +112,8 @@ private:
 
 	VOID createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
 
+	VOID handleGameOver();
+
 	Ray getPickingRay(int nScreenX, int nScreenY);
 	Ray transformRayToWorld(Ray* ray);
 
@@ -136,7 +140,9 @@ public:
 
 	VOID createMissile();
 	VOID createMonster();
+
 	VOID handlePicking(int nScreenX, int nScreenY);
+	VOID handleGameClear();
 };
 
 
