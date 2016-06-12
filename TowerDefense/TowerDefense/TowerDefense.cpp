@@ -103,6 +103,9 @@ VOID TowerDefense::Render() {
 }
 
 HRESULT TowerDefense::SetUp() {
+	// for random number
+	srand(time(nullptr));
+
 	if (FAILED(initIndexBuffer())) {
 		MessageBox(0, L"InitIndexBuffer Failed", 0, 0);
 		return E_FAIL;
@@ -346,9 +349,21 @@ VOID TowerDefense::createMissile() {
 VOID TowerDefense::createMonster() {
 	if (_pMap == nullptr || _pPortal == nullptr || _pMonsterList == nullptr) return;
 
+	int nMonsterType = rand() % MONSTER_NUM_TYPE;
+
 	D3DXVECTOR3 mapPosition = _pMap->getEndPosition();
 	s_nMonsterCreate++;
-	_pMonsterList->push_front(new TDMonster(mapPosition.x, mapPosition.y, mapPosition.z));
+	switch (nMonsterType) {
+	case TDMonster::MONSTER_LAND:
+		_pMonsterList->push_front(new TDMonster(mapPosition.x, mapPosition.y, mapPosition.z));
+		break;
+	case TDMonster::MONSTER_AIR:
+		_pMonsterList->push_front(new TDAirMonster(mapPosition.x, mapPosition.y, mapPosition.z));
+		break;
+	default:
+		MessageBox(0, L"not supported type of monster", 0, 0);
+		break;
+	}
 	(*(_pMonsterList->begin()))->setPortalPosition(_pPortal->getPosition());
 
 	if (s_nMonsterCreate >= TD_MAX_MONSTER) {

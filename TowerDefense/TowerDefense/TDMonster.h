@@ -18,6 +18,8 @@
 #define MONSTER_DEFAULT_POS_Y	0.0f
 #define MONSTER_DEFAULT_POS_Z	0.0f
 
+#define MONSTER_NUM_TYPE		2		// land type, air type
+
 class TDMonster : public TDObject {
 protected:
 	D3DXVECTOR3 _vPortalPosition;
@@ -27,6 +29,8 @@ public:
 
 	void setPortalPosition(D3DXVECTOR3 posPortal);
 	void moveToPortal();
+
+	enum MONSTER_TYPE {MONSTER_LAND, MONSTER_AIR};
 };
 
 #endif
