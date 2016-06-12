@@ -70,6 +70,8 @@ VOID TowerDefense::Cleanup() {
 	if (_pTowerList != nullptr) {
 		delete _pTowerList;
 	}
+	if (_pTile != nullptr) delete _pTile;
+
 	// kill timers
 	KillTimer(_pWindow, TD_RENDER_TIMER_ID);
 	KillTimer(_pWindow, TD_MISSILE_TIMER_ID);
@@ -226,6 +228,8 @@ VOID TowerDefense::initTDObjects() {
 	SetTimer(_pWindow, TD_MONSTER_TIMER_ID, TD_MONSTER_INTERVAL, nullptr);
 
 	_pTowerList = new std::vector<TDTower*>();
+
+	_pTile = new TDTile();
 }
 
 VOID TowerDefense::drawTowerDefense() {
@@ -249,9 +253,11 @@ VOID TowerDefense::drawTowerDefense() {
 			drawObject((TDMissile*)(*it));
 		}
 	}
+
+	drawObject(_pTile);
 }
 VOID TowerDefense::drawObject(const TDObject* pObject) {
-	if (pObject == nullptr) return;
+	if (pObject == nullptr || !pObject->isVisible()) return;
 
 	initVertexBuffer(pObject);
 	_pd3dDevice->SetStreamSource(0, _pVertexBuffer, 0, sizeof(Vertex));
@@ -264,6 +270,7 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 	_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, TD_NUM_VERTICES, 0, TD_NUM_INDICES / 3);
 
 }
+
 VOID TowerDefense::doTowerDefense() {
 	// move missile
 	for (unsigned int i = 0; i < _pTowerList->size(); i++) {
@@ -404,7 +411,6 @@ TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
 	return Ray(ray->_vOrigin, ray->_vDirection);
 }
 
-
 VOID TowerDefense::handleGameOver() {
 	MessageBox(0, L"GAME OVER!", L"GAME OVER", 0);
 	DestroyWindow(_pWindow);
@@ -417,4 +423,29 @@ VOID TowerDefense::handleGameClear() {
 
 	MessageBox(0, L"GAME CLEAR!", L"GAME CLEAR", 0);
 	DestroyWindow(_pWindow);
+}
+VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
+	Ray ray = getPickingRay(nScreenX, nScreenY);
+	transformRayToWorld(&ray);
+
+	// check tile
+	D3DXVECTOR3 mapPosition = _pMap->getPosition();
+	for (int i = 0; i < _pMap->getRow(); i++) {
+		for (int j = 0; j < _pMap->getCol(); j++) {
+			D3DXVECTOR3 lowerBound = mapPosition + D3DXVECTOR3(1.0f * j, 0.0f, 1.0f * i);
+			D3DXVECTOR3 upperBound = mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1));
+
+			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
+				if (_pMap->isAvailableTile(i, j)) {
+					_pTile->setVisible(true);
+					_pTile->setPosition(D3DXVECTOR3(lowerBound.x, upperBound.y, lowerBound.z));
+				}
+				else {
+					_pTile->setVisible(false);
+				}
+				return;
+			}
+		}
+	}
+	_pTile->setVisible(false);
 }

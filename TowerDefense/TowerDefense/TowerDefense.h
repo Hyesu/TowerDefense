@@ -15,6 +15,7 @@
 #include "TDAirMonster.h"
 #include "TDAirTower.h"
 #include "TDMissile.h"
+#include "TDTile.h"
 
 #define DEBUG(X)				MessageBox(0, X, 0, 0)
 
@@ -28,6 +29,8 @@
 
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
+#define TD_TILE_VERTICES		4
+#define TD_TILE_INDICES			6
 
 #define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 15.0f, -20.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
@@ -48,6 +51,8 @@
 #define TD_MAX_MONSTER			5
 #define TD_GAME_CLEAR_TIMER_ID	(TD_MONSTER_TIMER_ID + 1)
 #define TD_GAME_CLEAR_INTERVAL	1000
+#define TD_HOVER_TIMER_ID		(TD_GAME_CLEAR_TIMER_ID + 1)
+#define TD_HOVER_INTERVAL		500
 
 
 // init game and handle direct3D
@@ -64,10 +69,11 @@ private:
 	float					_fCameraAngle;
 
 	// Tower Defense Game Variables
-	TDMap* _pMap;
-	TDPortal* _pPortal;
-	std::vector<TDTower*>* _pTowerList;
-	std::list<TDMonster*>* _pMonsterList;
+	TDMap*					_pMap;
+	TDPortal*				_pPortal;
+	std::vector<TDTower*>*	_pTowerList;
+	std::list<TDMonster*>*	_pMonsterList;
+	TDTile*					_pTile;
 
 	static int s_nMonsterCreate;
 
@@ -108,6 +114,7 @@ private:
 
 	VOID drawTowerDefense();
 	VOID drawObject(const TDObject* pObject);
+
 	VOID doTowerDefense();
 
 	VOID createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
@@ -143,6 +150,7 @@ public:
 
 	VOID handlePicking(int nScreenX, int nScreenY);
 	VOID handleGameClear();
+	VOID handleMouseHover(int nScreenX, int nScreenY);
 };
 
 

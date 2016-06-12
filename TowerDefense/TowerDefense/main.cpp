@@ -37,6 +37,7 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	case WM_MOUSEMOVE:
 		if(TowerDefense::getInstance()->GetRButton())
 			TowerDefense::getInstance()->SetCamera(LOWORD(lParam));
+		TowerDefense::getInstance()->handleMouseHover(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 

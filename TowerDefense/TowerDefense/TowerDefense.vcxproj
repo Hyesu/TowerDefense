@@ -158,6 +158,7 @@
     <ClCompile Include="TDMonster.cpp" />
     <ClCompile Include="TDObject.cpp" />
     <ClCompile Include="TDPortal.cpp" />
+    <ClCompile Include="TDTile.cpp" />
     <ClCompile Include="TDTower.cpp" />
     <ClCompile Include="TowerDefense.cpp" />
   </ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="TDMonster.h" />
     <ClInclude Include="TDObject.h" />
     <ClInclude Include="TDPortal.h" />
+    <ClInclude Include="TDTile.h" />
     <ClInclude Include="TDTower.h" />
     <ClInclude Include="TowerDefense.h" />
   </ItemGroup>

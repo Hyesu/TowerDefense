@@ -18,7 +18,8 @@
 
 class TDObject {
 private:
-	D3DCOLOR _color;
+	D3DCOLOR	_color;
+	bool		_bVisible;
 
 protected:
 	D3DXVECTOR3 _vLowerBound, _vUpperBound;		// object lower bound and upper bound
@@ -41,6 +42,9 @@ public:
 	const float getLengthZ() const;
 
 	bool collideWith(const TDObject* pOther) const;
+	bool isVisible() const;
+
+	void setVisible(bool bVisible);
 };
 
 #endif

@@ -8,6 +8,8 @@ TDObject::TDObject(float fLengthX, float fLengthY, float fLengthZ, int nRed, int
 
 	_vPosition1 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	_vPosition2 = D3DXVECTOR3(fLengthX, fLengthY, fLengthZ);
+
+	_bVisible = true;
 }
 TDObject::~TDObject() {
 }
@@ -50,4 +52,11 @@ bool TDObject::collideWith(const TDObject* pOther) const {
 
 	if (bCollisionX && bCollisionY && bCollisionZ) return true;
 	else return false;
+}
+bool TDObject::isVisible() const {
+	return _bVisible;
+}
+
+void TDObject::setVisible(bool bVisible) {
+	_bVisible = bVisible;
 }
