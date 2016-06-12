@@ -16,8 +16,14 @@ TDTower::TDTower(D3DXVECTOR3 vTowerPositon, D3DXVECTOR3 vMapPosition1, D3DXVECTO
 
 	_pMissileList = new std::list<TDMissile*>();
 
-	_vMissileBoundary1 = vMapPosition1;
-	_vMissileBoundary2 = vMapPosition2;
+	_vMissileBoundary1 = D3DXVECTOR3(
+		vMapPosition1.x < _vPosition1.x - TOWER_BOUNDARY ? _vPosition1.x - TOWER_BOUNDARY : vMapPosition1.x,
+		vMapPosition1.y,
+		vMapPosition1.z < _vPosition1.z - TOWER_BOUNDARY ? _vPosition1.z - TOWER_BOUNDARY : vMapPosition1.z);
+	_vMissileBoundary2 = D3DXVECTOR3(
+		vMapPosition2.x > _vPosition2.x + TOWER_BOUNDARY ? _vPosition2.x + TOWER_BOUNDARY : vMapPosition2.x,
+		vMapPosition2.y,
+		vMapPosition2.z > _vPosition2.z + TOWER_BOUNDARY ? _vPosition2.z + TOWER_BOUNDARY : vMapPosition2.z);
 
 	_nMissileDirectionIndex = 0;
 }
