@@ -1,13 +1,9 @@
 #include "TDTower.h"
 
 const D3DXVECTOR3 TDTower::s_vMissileDirection[] = {
-	D3DXVECTOR3(1.0f, 0.0f, -1.0f),
 	D3DXVECTOR3(0.0f, 0.0f, -1.0f),
-	D3DXVECTOR3(-1.0f, 0.0f, -1.0f),
 	D3DXVECTOR3(-1.0f, 0.0f, 0.0f),
-	D3DXVECTOR3(-1.0f, 0.0f, 1.0f),
 	D3DXVECTOR3(0.0f, 0.0f, -1.0f),
-	D3DXVECTOR3(1.0f, 0.0f, 1.0f),
 	D3DXVECTOR3(1.0f, 0.0f, 0.0f)
 };
 
