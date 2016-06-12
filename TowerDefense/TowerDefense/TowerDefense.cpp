@@ -3,6 +3,7 @@ TowerDefense* TowerDefense::_pInstance = nullptr;
 const DWORD TowerDefense::Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
 int TowerDefense::s_nMonsterCreate = 0;
 
+// create and init member variables
 TowerDefense::TowerDefense() {
 	init();
 }
@@ -18,6 +19,8 @@ VOID TowerDefense::init() {
 	_fCameraAngle = 0.0f;
 }
 
+
+// public direct3D functions
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
 	// Create the D3D object, which is needed to create the D3DDevice.
 	if (NULL == (_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
@@ -102,6 +105,8 @@ VOID TowerDefense::Render() {
 	_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 }
 
+
+// init direct3D and Game objects
 HRESULT TowerDefense::SetUp() {
 	// for random number
 	srand(time(nullptr));
@@ -235,6 +240,8 @@ VOID TowerDefense::initTDObjects() {
 	_pTile = new TDTile();
 }
 
+
+// draw game object functions
 VOID TowerDefense::drawTowerDefense() {
 	drawObject(_pMap);
 	drawObject(_pPortal);
@@ -274,6 +281,8 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 
 }
 
+
+// game logic functions
 VOID TowerDefense::doTowerDefense() {
 	// move missile
 	for (unsigned int i = 0; i < _pTowerList->size(); i++) {
@@ -302,12 +311,20 @@ VOID TowerDefense::doTowerDefense() {
 				bMonsterKillCondition = true;
 				break;
 			}
+
+			for (unsigned int j = 0; j < _pTowerList->size(); j++) {
+				TDTower* otherTower = _pTowerList->at(j);
+				if (tower == otherTower) continue;
+				tower->handleCollideWith(otherTower);
+			}
 		}			
 		if (!bMonsterKillCondition)
 			++it;
 	}
 }
 
+
+// camera rotation functions by mouse right-button click
 VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
 	_bRButtonClicked = bButtonClicked;
 	_nClickPosX = nClickPosX;
@@ -332,6 +349,8 @@ bool TowerDefense::GetRButton() const {
 	return _bRButtonClicked;
 }
 
+
+// create game objects 
 VOID TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
 	if(_pTowerList->empty())
 		SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
@@ -372,6 +391,8 @@ VOID TowerDefense::createMonster() {
 	}
 }
 
+
+// mouse left-button click handle
 VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
 	Ray ray = getPickingRay(nScreenX, nScreenY);
 	transformRayToWorld(&ray);
@@ -426,6 +447,8 @@ TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
 	return Ray(ray->_vOrigin, ray->_vDirection);
 }
 
+
+// etc event handler
 VOID TowerDefense::handleGameOver() {
 	MessageBox(0, L"GAME OVER!", L"GAME OVER", 0);
 	DestroyWindow(_pWindow);

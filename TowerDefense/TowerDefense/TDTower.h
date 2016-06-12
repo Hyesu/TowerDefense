@@ -30,7 +30,7 @@ public:
 
 	void createMissile();
 	void moveMissile();
-	bool handleCollideWith(const TDObject* pMonster);
+	bool handleCollideWith(const TDObject* pObject);
 
 	std::list<TDMissile*>* getMissileList() const;
 

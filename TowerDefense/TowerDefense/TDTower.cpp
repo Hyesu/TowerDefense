@@ -49,10 +49,10 @@ std::list<TDMissile*>* TDTower::getMissileList() const {
 	return _pMissileList;
 }
 
-bool TDTower::handleCollideWith(const TDObject* pMonster) {
+bool TDTower::handleCollideWith(const TDObject* pObject) {
 	for (std::list<TDMissile*>::iterator it = _pMissileList->begin(); it != _pMissileList->end(); ) {
 		TDMissile* pMissile = (TDMissile*)(*it);
-		if (pMonster->collideWith(pMissile)) {
+		if (pObject->collideWith(pMissile)) {
 			// missile collide with the monster
 			delete pMissile;
 			it = _pMissileList->erase(it);
