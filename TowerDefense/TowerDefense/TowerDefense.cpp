@@ -474,13 +474,16 @@ VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 			D3DXVECTOR3 upperBound = mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1));
 
 			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
+				_pTile->setVisible(true);
+				_pTile->setPosition(D3DXVECTOR3(lowerBound.x, upperBound.y, lowerBound.z));
+/*
 				if (_pMap->isAvailableTile(i, j)) {
 					_pTile->setVisible(true);
 					_pTile->setPosition(D3DXVECTOR3(lowerBound.x, upperBound.y, lowerBound.z));
 				}
 				else {
 					_pTile->setVisible(false);
-				}
+				}*/
 				return;
 			}
 		}

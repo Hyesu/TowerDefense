@@ -10,7 +10,7 @@
 #define MISSILE_LENGTH				1.0f
 
 #define MISSILE_MOVE_UNIT			0.1f
-#define MISSILE_NUM_DIRECTION		8
+#define MISSILE_NUM_DIRECTION		4
 
 class TDMissile : public TDObject {
 private:

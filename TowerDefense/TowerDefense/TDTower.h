@@ -15,7 +15,7 @@
 
 #define TOWER_LENGTH		1.0f
 
-#define TOWER_BOUNDARY		2.0f
+#define TOWER_BOUNDARY		3.0f
 
 
 class TDTower : public TDObject {
