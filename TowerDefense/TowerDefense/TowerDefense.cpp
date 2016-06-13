@@ -34,6 +34,9 @@ HRESULT TowerDefense::InitD3D(HWND hWnd) {
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 	d3dpp.Windowed = TRUE;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+
 
 	// check device capability for hardware vertex processing
 	D3DCAPS9 caps;
@@ -86,7 +89,7 @@ VOID TowerDefense::Render() {
 		return;
 
 	// Clear the backbuffer to a TD_BACKGROUND_COLOR
-	_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, TD_BACKGROUND_COLOR, 1.0f, 0);
+	_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, TD_BACKGROUND_COLOR, 1.0f, 0);
 
 	// Begin the scene
 	if (SUCCEEDED(_pd3dDevice->BeginScene())) 	{
@@ -212,7 +215,10 @@ HRESULT TowerDefense::initCamera() {
 		TD_PROJECTION_NEAR,
 		TD_PROJECTION_FAR);
 	_pd3dDevice->SetTransform(D3DTS_PROJECTION, &projectionMatrix);
+
+	// set render state
 	_pd3dDevice->SetRenderState(D3DRS_LIGHTING, false);
+	_pd3dDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
 	return S_OK;
 }
