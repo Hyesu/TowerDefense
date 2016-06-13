@@ -118,7 +118,7 @@ private:
 	VOID drawTowerDefense();
 	VOID drawObject(const TDObject* pObject);
 
-	VOID doTowerDefense();
+	bool doTowerDefense();
 
 	TDTower* createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
 

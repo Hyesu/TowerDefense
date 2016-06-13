@@ -97,7 +97,7 @@ VOID TowerDefense::Render() {
 		_pd3dDevice->SetIndices(_pIndexBuffer);
 		_pd3dDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 
-		doTowerDefense();
+		if (!doTowerDefense()) return;
 		drawTowerDefense();
 
 		// End the scene
@@ -259,7 +259,7 @@ VOID TowerDefense::drawTowerDefense() {
 
 	// draw monsters
 	for (std::list<TDMonster*>::iterator it = _pMonsterList->begin(); it != _pMonsterList->end(); ++it) {
-		drawObject((TDMonster*)(*it));
+		drawObject(*it);
 	}
 
 	// draw tower and missiles
@@ -294,7 +294,7 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 
 
 // game logic functions
-VOID TowerDefense::doTowerDefense() {
+bool TowerDefense::doTowerDefense() {
 	// move missile
 	for (unsigned int i = 0; i < _pTowerList->size(); i++) {
 		TDTower* tower = _pTowerList->at(i);
@@ -309,6 +309,7 @@ VOID TowerDefense::doTowerDefense() {
 		// check collision with portal
 		if (_pPortal != nullptr && _pPortal->collideWith(pMonster)) {
 			handleGameOver();
+			return false;
 		}
 
 		bool bMonsterKillCondition = false;
@@ -332,6 +333,7 @@ VOID TowerDefense::doTowerDefense() {
 		if (!bMonsterKillCondition)
 			++it;
 	}
+	return true;
 }
 
 
