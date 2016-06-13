@@ -1,12 +1,23 @@
+/**
+	File: TowerDefense.cpp
+		Init static variables of TowerDefense class.
+		Define functions of TowerDefense class.
+
+	Shin Hyesu, 2016.06
+*/
 #include "TowerDefense.h"
+
 TowerDefense* TowerDefense::_pInstance = nullptr;
 const DWORD TowerDefense::Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
 int TowerDefense::s_nMonsterCreate = 0;
 
-// create and init member variables
 TowerDefense::TowerDefense() {
 	init();
 }
+/**
+	Function: init
+		Init Direct3D variables and member variables.
+*/
 VOID TowerDefense::init() {
 	_pD3D = nullptr;
 	_pd3dDevice = nullptr;
@@ -15,12 +26,19 @@ VOID TowerDefense::init() {
 
 	_bRButtonClicked = false;
 
-	_vCameraPosition = TD_CAMERA_POSITION;
 	_fCameraAngle = 0.0f;
 }
 
 
-// public direct3D functions
+/**
+	Function: InitD3D
+		Init Direct3D variables and create display device using direct3D API.
+
+	Params:
+		hWnd	handle of focus window
+	Return:
+		boolean value of result
+*/
 HRESULT TowerDefense::InitD3D(HWND hWnd) {
 	// Create the D3D object, which is needed to create the D3DDevice.
 	if (NULL == (_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
@@ -58,6 +76,11 @@ HRESULT TowerDefense::InitD3D(HWND hWnd) {
 
 	return S_OK;
 }
+/**
+	Function: CleanUp
+		Release direct3D objects and delete TDObjects.
+		Kill timer for game logic.
+*/
 VOID TowerDefense::Cleanup() {
 	// release direct3d objects
 	if (_pd3dDevice != nullptr)		_pd3dDevice->Release();
@@ -82,6 +105,10 @@ VOID TowerDefense::Cleanup() {
 	KillTimer(_pWindow, TD_MONSTER_TIMER_ID);
 	KillTimer(_pWindow, TD_GAME_CLEAR_TIMER_ID);
 }
+/**
+	Function: Render
+		Render TDObjects at window
+*/
 VOID TowerDefense::Render() {
 	if (NULL == _pd3dDevice)
 		return;
@@ -105,9 +132,13 @@ VOID TowerDefense::Render() {
 	// Present the backbuffer contents to the display
 	_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 }
+/**
+	Function: SetUp
+		Set up buffer and camera for render and init TDObjects for game
 
-
-// init direct3D and Game objects
+	Return:
+		boolean value of result
+*/
 HRESULT TowerDefense::SetUp() {
 	// for random number
 	srand(static_cast<unsigned int>(time(nullptr)));
@@ -126,6 +157,16 @@ HRESULT TowerDefense::SetUp() {
 
 	return S_OK;
 }
+
+/**
+	Function: InitVertexBuffer
+		Init vertex buffer.
+
+	Params:
+		pObject		target object for render
+	Return:
+		boolean value of result
+*/
 HRESULT TowerDefense::initVertexBuffer(const TDObject* pObject) {
 	// create vertex buffer
 	if (FAILED(_pd3dDevice->CreateVertexBuffer(
@@ -159,6 +200,13 @@ HRESULT TowerDefense::initVertexBuffer(const TDObject* pObject) {
 
 	return S_OK;
 }
+/**
+	Function: InitIndexBuffer
+		Init index buffer for rendering a cube
+
+	Return:
+		boolean value of result
+*/
 HRESULT TowerDefense::initIndexBuffer() {
 	// create index buffer
 	if (FAILED(_pd3dDevice->CreateIndexBuffer(
@@ -202,6 +250,14 @@ HRESULT TowerDefense::initIndexBuffer() {
 
 	return S_OK;
 }
+/**
+	Function: InitCamera
+		Init view space of camera and projection matrix.
+		Set rendering state(not using lighting, using z-buffer)
+
+	Return:
+		boolean value of result
+*/
 HRESULT TowerDefense::initCamera() {
 	initViewSpace(TD_CAMERA_POSITION);
 
@@ -220,6 +276,14 @@ HRESULT TowerDefense::initCamera() {
 
 	return S_OK;
 }
+/**
+	Function: InitViewSpace
+		Init position for camera and target, up vector of camera.
+		make view matrix and set it to device
+
+	Params:
+		vCameraPosition		position of camera(x, y, z)
+*/
 VOID TowerDefense::initViewSpace(D3DXVECTOR3 vCameraPosition) {
 	D3DXVECTOR3 targetPosition = TD_TARGET_POSITION;
 	D3DXVECTOR3 upVector = TD_WORLD_UP_VECTOR;
@@ -228,6 +292,11 @@ VOID TowerDefense::initViewSpace(D3DXVECTOR3 vCameraPosition) {
 	D3DXMatrixLookAtLH(&viewMatrix, &vCameraPosition, &targetPosition, &upVector);
 	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
 }
+/**
+	Function: InitTDObjects
+		Init game data(map, portal, monster, etc)
+		Set timer for game logic
+*/
 VOID TowerDefense::initTDObjects() {
 	// init map
 	_pMap = new TDMap();
@@ -254,7 +323,10 @@ VOID TowerDefense::initTDObjects() {
 }
 
 
-// draw game object functions
+/**
+	Function: DrawTowerDefense
+		Draw TDObjects; map, monsters, towers, missiles, tile(user mouse)
+*/
 VOID TowerDefense::drawTowerDefense() {
 	drawObject(_pMap);
 	drawObject(_pPortal);
@@ -279,6 +351,15 @@ VOID TowerDefense::drawTowerDefense() {
 
 	drawObject(_pTile);
 }
+/**
+	Function: drawObject
+		Draw TDObject at screen.
+		Init vertex buffer for the object, translate position of the object at world space.
+		Draw triangles for the object
+
+	Params:
+		pObject		target object for drawing
+*/
 VOID TowerDefense::drawObject(const TDObject* pObject) {
 	if (pObject == nullptr || !pObject->isVisible()) return;
 
@@ -295,7 +376,13 @@ VOID TowerDefense::drawObject(const TDObject* pObject) {
 }
 
 
-// game logic functions
+/**
+	Function: doTowerDefense
+		Move TDObjects and check collision between them.
+		If monster collides with the portal, do "GAME OVER".
+		If missile collides with a monster, delete monster.
+		If missile collides with a tower, delete missile.
+*/
 bool TowerDefense::doTowerDefense() {
 	// move missile
 	for (unsigned int i = 0; i < _pTowerList->size(); i++) {
@@ -339,11 +426,26 @@ bool TowerDefense::doTowerDefense() {
 }
 
 
-// camera rotation functions by mouse right-button click
+/**
+	Function: SetRButton
+		Event handler called when mouse R button clicked or up.
+
+	Params:
+		bButtonClicked	boolean value representing R button clicked status
+		nClickPosX		integer value mouse X vlaue in screen
+*/
 VOID TowerDefense::SetRButton(bool bButtonClicked, short nClickPosX) {
 	_bRButtonClicked = bButtonClicked;
 	_nClickPosX = nClickPosX;
 }
+/**
+	Function: SetCamera
+		Event handler called when mouse R button clicked and mouse move.
+		Calculate mouse x value in screen and using this value, rotate camera
+
+	Params:
+		nClickPosX	x value of mouse at screen
+*/
 VOID TowerDefense::SetCamera(short nClickPosX) {
 	if (!_bRButtonClicked) return;
 
@@ -360,12 +462,27 @@ VOID TowerDefense::SetCamera(short nClickPosX) {
 	initViewSpace(rotatedPosition);
 	_nClickPosX = nClickPosX;
 }
+/**
+	Function: GetRButton
+		Get R Button clicked status
+
+	Return:
+		boolean value of R button clicked status
+*/
 bool TowerDefense::GetRButton() const {
 	return _bRButtonClicked;
 }
 
+/**
+	Function: createTower
+		Create tower and push this into tower list
 
-// create game objects 
+	Params:
+		vMapPosition	position of tower on map (x, y, z)
+		bAirTower		boolean value for creating air-tower
+	Return:
+		pointer of created tower
+*/
 TDTower* TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
 	TDTower* newTower = nullptr;
 	if (bAirTower)
@@ -377,10 +494,20 @@ TDTower* TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
 	return newTower;
 
 }
+/**
+	Function: createMissile
+		Create missile for each tower in tower list
+*/
 VOID TowerDefense::createMissile() {
 	for (int i = 0; i < _pTowerList->size(); i++)
 		_pTowerList->at(i)->createMissile();
 }
+/**
+	Function: createMonster
+		Create land monster and air monster randomly.
+		If the number of created monster is over TD_MAX_MONSTER, 
+		do not create monster and set timer for checking all monsters are dead.
+*/
 VOID TowerDefense::createMonster() {
 	if (_pMap == nullptr || _pPortal == nullptr || _pMonsterList == nullptr) return;
 
@@ -408,11 +535,25 @@ VOID TowerDefense::createMonster() {
 }
 
 
-// event handler functions
+/**
+	Function: handleGameOver
+		Handler game over situation.
+		Show message box for give info to user.
+		Destroy window.
+		This function is called when monster collides with portal
+*/
 VOID TowerDefense::handleGameOver() {
 	MessageBox(0, L"GAME OVER!", L"GAME OVER", 0);
 	DestroyWindow(_pWindow);
 }
+/**
+	Function: handleGameClear
+		Handle game clear situation.
+		Stop checking all monsters are dead and rendering TDObjects.
+		Show message box for giving info to user.
+		Destroy window.
+		This function is called when the number of created monsters is over TD_MAX_MONSTER.
+*/
 VOID TowerDefense::handleGameClear() {
 	if (!_pMonsterList->empty()) return;
 
@@ -422,6 +563,17 @@ VOID TowerDefense::handleGameClear() {
 	MessageBox(0, L"GAME CLEAR!", L"GAME CLEAR", 0);
 	DestroyWindow(_pWindow);
 }
+/**
+	Function: handleMouseHover
+		Handle mouse move event when mouse is on the map.
+		Get picking ray and probe this ray in map.
+		Show tile on the map using cyan color(available to build tower)
+		and magenta color(unavailable to build tower).
+
+	Params:
+		nScreenX	x position of mouse on the screen
+		nScreenY	y position of mouse on the screen
+*/
 VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 	Ray ray = getPickingRay(nScreenX, nScreenY);
 	transformRayToWorld(&ray);
@@ -451,6 +603,13 @@ VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 	_nMouseRow = -1;
 	_nMouseCol = -1;
 }
+/**
+	Function: handleMouseClick
+		Event handler for mouse L button clicked.
+		Check tile which mouse pointing on the map is available to build tower.
+		If the tile is available, create tower.
+		If the tile is a tower, change missile direction of this tower.
+*/
 VOID TowerDefense::handleMouseClick() {
 	if (_nMouseRow < 0 || _nMouseCol < 0) return;
 
@@ -469,7 +628,16 @@ VOID TowerDefense::handleMouseClick() {
 }
 
 
-// functions for picking
+/**
+	Function: getPickingRay
+		Get picking ray from screen position to view space position.
+
+	Params:
+		nScreenX	x position of mouse on the screen
+		nScreenY	y position of mouse on the screen
+	Return:
+		picking ray
+*/
 TowerDefense::Ray TowerDefense::getPickingRay(int nScreenX, int nScreenY) {
 	D3DVIEWPORT9 viewport;
 	_pd3dDevice->GetViewport(&viewport);
@@ -482,6 +650,15 @@ TowerDefense::Ray TowerDefense::getPickingRay(int nScreenX, int nScreenY) {
 
 	return Ray(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(px, py, 1.0f));
 }
+/**
+	Function: transformRayToWorld
+		Transform ray from view space to world space
+
+	Params:
+		ray		target ray
+	Return:
+		transformed ray
+*/
 TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
 	// get inverse of view matrix
 	D3DXMATRIX view;

@@ -1,3 +1,11 @@
+/**
+	File: TowerDefense.h
+		Include header files and define constants for tower defense game.
+
+	Shin Hyesu, 2016.06
+*/
+
+
 #ifndef __TOWER_DEFENSE_H__
 #define __TOWER_DEFENSE_H__
 
@@ -18,8 +26,6 @@
 #include "TDMissile.h"
 #include "TDTile.h"
 
-#define DEBUG(X)				MessageBox(0, X, 0, 0)
-
 //-----------------------------------------------------------------------------
 // Constants
 //-----------------------------------------------------------------------------
@@ -30,8 +36,6 @@
 
 #define TD_NUM_VERTICES			8	// cube vertices
 #define TD_NUM_INDICES			36	// cube indices
-#define TD_TILE_VERTICES		4
-#define TD_TILE_INDICES			6
 
 #define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 15.0f, -15.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
@@ -57,18 +61,23 @@
 #define TD_HOVER_INTERVAL		500
 
 
-// init game and handle direct3D
+/**
+	Class: TowerDefense
+		Handle display device using Direct3D API.
+		Manage game logic using TDObjects(game data).
+*/
 class TowerDefense
 {
 private:
-	static TowerDefense* _pInstance;
+	static TowerDefense*	_pInstance;
 
+	// Direct3D variables
 	LPDIRECT3D9				_pD3D;			// Used to create the D3DDevice
 	LPDIRECT3DDEVICE9		_pd3dDevice;	// Our rendering device
 	IDirect3DVertexBuffer9* _pVertexBuffer;
 	IDirect3DIndexBuffer9*  _pIndexBuffer;
-	D3DXVECTOR3				_vCameraPosition;
 	float					_fCameraAngle;
+
 
 	// Tower Defense Game Variables
 	TDMap*					_pMap;
@@ -80,10 +89,11 @@ private:
 
 	static int s_nMonsterCreate;
 
-	// Window Variables: window, messages, ...
-	HWND _pWindow;
-	bool _bRButtonClicked;
-	short _nClickPosX;
+
+	// Window Variables
+	HWND	_pWindow;
+	bool	_bRButtonClicked;
+	short	_nClickPosX;
 
 
 	// Structures
@@ -94,9 +104,9 @@ private:
 			_color = color;
 		}
 
-		float _x, _y, _z;
-		D3DCOLOR _color; // 32bit color:ARGB
-		static const DWORD FVF;
+		float				_x, _y, _z;
+		D3DCOLOR			_color; // 32bit color:ARGB
+		static const DWORD	FVF;
 	};
 	struct Ray {
 		Ray(D3DXVECTOR3 vOrigin, D3DXVECTOR3 vDirection) {
@@ -107,7 +117,7 @@ private:
 	};
 
 
-	// Functions 
+
 	VOID init();
 	HRESULT initVertexBuffer(const TDObject* pObject);
 	HRESULT initIndexBuffer();
@@ -119,11 +129,9 @@ private:
 	VOID drawObject(const TDObject* pObject);
 
 	bool doTowerDefense();
-
-	TDTower* createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
-
 	VOID handleGameOver();
-
+	TDTower* createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
+	
 	Ray getPickingRay(int nScreenX, int nScreenY);
 	Ray transformRayToWorld(Ray* ray);
 
@@ -141,7 +149,6 @@ public:
 	HRESULT InitD3D(HWND hWnd);
 	VOID Cleanup();
 	VOID Render();
-
 	HRESULT SetUp();
 
 	VOID SetRButton(bool bButtonClicked, short nClickPosX);
@@ -151,7 +158,6 @@ public:
 	VOID createMissile();
 	VOID createMonster();
 
-	VOID handlePicking(int nScreenX, int nScreenY);
 	VOID handleGameClear();
 	VOID handleMouseHover(int nScreenX, int nScreenY);
 	VOID handleMouseClick();

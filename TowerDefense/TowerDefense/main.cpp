@@ -1,3 +1,10 @@
+/**
+	File: main.cpp
+		Start application and processing window message.
+
+	Shin Hyesu, 2016.06
+*/
+
 #include "TowerDefense.h"
 
 LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -43,7 +50,6 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-
 VOID EnterMsgLoop(HWND hWnd) {
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
@@ -56,7 +62,6 @@ VOID EnterMsgLoop(HWND hWnd) {
 		DispatchMessage(&msg);
 	}
 }
-
 INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT) {
 	UNREFERENCED_PARAMETER(hInst);
 
