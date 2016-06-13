@@ -5,6 +5,8 @@ TDMonster::TDMonster(float fPosMapEndX, float fPosMapEndY, float fPosMapEndZ)
 	D3DXVECTOR3 monsterPos = D3DXVECTOR3(fPosMapEndX - MONSTER_LENGTH_X, fPosMapEndY, fPosMapEndZ - MONSTER_LENGTH_Z);
 	_vPosition1 = monsterPos;
 	_vPosition2 += monsterPos;
+
+	_nType = TYPE_MONSTER;
 }
 void TDMonster::setPortalPosition(D3DXVECTOR3 vPortal) {
 	_vPortalPosition = vPortal;

@@ -24,6 +24,7 @@ private:
 protected:
 	D3DXVECTOR3 _vLowerBound, _vUpperBound;		// object lower bound and upper bound
 	D3DXVECTOR3 _vPosition1, _vPosition2;
+	int			_nType;
 
 public:
 	TDObject(float fLengthX = OBJECT_DEFAULT_LENGTH, float fLengthY = OBJECT_DEFAULT_LENGTH, float fLengthZ = OBJECT_DEFAULT_LENGTH,
@@ -32,6 +33,8 @@ public:
 
 	// getter
 	const D3DCOLOR& getColor() const;
+	const int getType() const;
+
 	const D3DXVECTOR3& getLowerBound() const;
 	const D3DXVECTOR3& getUpperBound() const;
 	const D3DXVECTOR3& getPosition() const;
@@ -45,6 +48,9 @@ public:
 	bool isVisible() const;
 
 	void setVisible(bool bVisible);
+	void setColor(int nRed, int nGreen, int nBlue);
+
+	enum OBJECT_TYPE {TYPE_OBJECT, TYPE_MAP, TYPE_PORTAL, TYPE_MONSTER, TYPE_TOWER, TYPE_MISSILE, TYPE_TILE};
 };
 
 #endif

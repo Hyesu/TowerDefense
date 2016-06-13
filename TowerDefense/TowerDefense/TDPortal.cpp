@@ -5,4 +5,6 @@ TDPortal::TDPortal(float fMapPosX, float fMapPosY, float fMapPosZ) :
 	D3DXVECTOR3 portalPos = D3DXVECTOR3(fMapPosX, fMapPosY + 1.0f, fMapPosZ);
 	_vPosition1 = portalPos;
 	_vPosition2 += portalPos;
+
+	_nType = TYPE_PORTAL;
 }

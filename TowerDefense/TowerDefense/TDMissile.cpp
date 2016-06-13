@@ -7,6 +7,8 @@ TDMissile::TDMissile(float fTowerPosX, float fTowerPosY, float fTowerPosZ, D3DXV
 	_vPosition2 += missilePos;
 
 	_vDirection = MISSILE_MOVE_UNIT * vDirection;
+
+	_nType = TYPE_MISSILE;
 }
 
 // if missile moving is successful, return true

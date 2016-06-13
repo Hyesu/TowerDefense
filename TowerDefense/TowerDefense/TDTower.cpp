@@ -26,6 +26,8 @@ TDTower::TDTower(D3DXVECTOR3 vTowerPositon, D3DXVECTOR3 vMapPosition1, D3DXVECTO
 		vMapPosition2.z > _vPosition2.z + TOWER_BOUNDARY ? _vPosition2.z + TOWER_BOUNDARY : vMapPosition2.z);
 
 	_nMissileDirectionIndex = 0;
+
+	_nType = TYPE_TOWER;
 }
 TDTower::~TDTower() {
 	if (_pMissileList != nullptr) delete _pMissileList;

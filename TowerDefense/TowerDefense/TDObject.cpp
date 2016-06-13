@@ -10,6 +10,8 @@ TDObject::TDObject(float fLengthX, float fLengthY, float fLengthZ, int nRed, int
 	_vPosition2 = D3DXVECTOR3(fLengthX, fLengthY, fLengthZ);
 
 	_bVisible = true;
+
+	_nType = TYPE_OBJECT;
 }
 TDObject::~TDObject() {
 }
@@ -17,6 +19,9 @@ TDObject::~TDObject() {
 // getter
 const D3DCOLOR& TDObject::getColor() const {
 	return _color;
+}
+const int TDObject::getType() const {
+	return _nType;
 }
 const D3DXVECTOR3& TDObject::getLowerBound() const {
 	return _vLowerBound;
@@ -59,4 +64,7 @@ bool TDObject::isVisible() const {
 
 void TDObject::setVisible(bool bVisible) {
 	_bVisible = bVisible;
+}
+void TDObject::setColor(int nRed, int nGreen, int nBlue) {
+	_color = D3DCOLOR_XRGB(nRed, nGreen, nBlue);
 }

@@ -13,6 +13,8 @@ TDMap::TDMap() : TDObject(MAP_LENGTH_X, MAP_LENGTH_Y, MAP_LENGTH_Z, MAP_COLOR, M
 	_pObjectList = new std::vector<TDObject*>();
 	_pObjectList->assign(MAP_NUM_ROW * MAP_NUM_COL, nullptr);
 	_pDummyObject = new TDObject();
+
+	_nType = TYPE_MAP;
 }
 TDMap::~TDMap() {
 	if (_pDummyObject != nullptr) {

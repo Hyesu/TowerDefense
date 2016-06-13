@@ -271,7 +271,7 @@ VOID TowerDefense::drawTowerDefense() {
 		drawObject(tower);
 
 		std::list<TDMissile*>* pMissileList = tower->getMissileList();
-		if (pMissileList->empty()) return;
+		if (pMissileList->empty()) continue;
 		for (std::list<TDMissile*>::iterator it = pMissileList->begin(); it != pMissileList->end(); ++it) {
 			drawObject((TDMissile*)(*it));
 		}
@@ -367,9 +367,6 @@ bool TowerDefense::GetRButton() const {
 
 // create game objects 
 TDTower* TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
-	/*if(_pTowerList->empty())
-		SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);*/
-
 	TDTower* newTower = nullptr;
 	if (bAirTower)
 		newTower = new TDAirTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
@@ -441,6 +438,11 @@ VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 				_nMouseRow = i;
 				_nMouseCol = j;
 
+				if (_pMap->isAvailableTile(_nMouseRow, _nMouseCol))
+					_pTile->setColor(TILE_COLOR_RED, TILE_COLOR_GREEN, TILE_COLOR_BLUE);
+				else
+					_pTile->setColor(TILE_COLOR_RED_UNAVAIL, TILE_COLOR_GREEN_UNAVAIL, TILE_COLOR_BLUE_UNAVAIL);
+
 				return;
 			}
 		}
@@ -460,8 +462,9 @@ VOID TowerDefense::handleMouseClick() {
 	}
 	else {
 		// click tower case
-		TDTower* clickedTower = (TDTower*)(_pMap->getObjectOn(_nMouseRow, _nMouseCol));
-		clickedTower->changeMissileDirection();
+		TDObject* clickedObject = _pMap->getObjectOn(_nMouseRow, _nMouseCol);
+		if(clickedObject->getType() == TDObject::TYPE_TOWER)
+			((TDTower*)clickedObject)->changeMissileDirection();
 	}
 }
 
