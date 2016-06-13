@@ -54,9 +54,7 @@ HRESULT TowerDefense::InitD3D(HWND hWnd) {
 		return E_FAIL;
 	}
 
-	// set render interval
-	_pWindow = hWnd;
-	SetTimer(_pWindow, TD_RENDER_TIMER_ID, TD_RENDER_INTERVAL, nullptr);
+	_pWindow = hWnd;	
 
 	return S_OK;
 }
@@ -249,6 +247,10 @@ VOID TowerDefense::initTDObjects() {
 	_pTowerList = new std::vector<TDTower*>();
 
 	_pTile = new TDTile();
+
+	// set timer
+	SetTimer(_pWindow, TD_RENDER_TIMER_ID, TD_RENDER_INTERVAL, nullptr);
+	SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
 }
 
 
@@ -365,8 +367,8 @@ bool TowerDefense::GetRButton() const {
 
 // create game objects 
 TDTower* TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
-	if(_pTowerList->empty())
-		SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
+	/*if(_pTowerList->empty())
+		SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);*/
 
 	TDTower* newTower = nullptr;
 	if (bAirTower)
