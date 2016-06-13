@@ -444,9 +444,9 @@ VOID TowerDefense::handleMouseClick() {
 
 	if (_pMap->isAvailableTile(_nMouseRow, _nMouseCol)) {
 		// click empty tile case
-		D3DXVECTOR3 clickedTilePosition = _pMap->getPosition() + D3DXVECTOR3(1.0 * _nMouseCol, 0.0f, 1.0f * _nMouseRow);
+		D3DXVECTOR3 clickedTilePosition = _pMap->getPosition() + D3DXVECTOR3(1.0f * _nMouseCol, 0.0f, 1.0f * _nMouseRow);
 		_pMap->setAvailable(_nMouseRow, _nMouseCol, 
-			createTower(clickedTilePosition, static_cast<bool>(GetAsyncKeyState(VK_LSHIFT) & 0x8000)));
+			createTower(clickedTilePosition, GetAsyncKeyState(VK_LSHIFT) & 0x8000 ? true : false));
 	}
 	else {
 		// click tower case
