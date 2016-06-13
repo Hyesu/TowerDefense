@@ -76,6 +76,7 @@ private:
 	std::vector<TDTower*>*	_pTowerList;
 	std::list<TDMonster*>*	_pMonsterList;
 	TDTile*					_pTile;
+	int						_nMouseRow, _nMouseCol;
 
 	static int s_nMonsterCreate;
 
@@ -119,7 +120,7 @@ private:
 
 	VOID doTowerDefense();
 
-	VOID createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
+	TDTower* createTower(D3DXVECTOR3 vMapPosition, bool bAirTower = false);
 
 	VOID handleGameOver();
 
@@ -153,6 +154,7 @@ public:
 	VOID handlePicking(int nScreenX, int nScreenY);
 	VOID handleGameClear();
 	VOID handleMouseHover(int nScreenX, int nScreenY);
+	VOID handleMouseClick();
 };
 
 

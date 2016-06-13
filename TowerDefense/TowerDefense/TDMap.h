@@ -1,6 +1,7 @@
 #ifndef __TD_MAP_H__
 #define __TD_MAP_H__
 
+#include <vector>
 #include "TDObject.h"
 
 #define MAP_COLOR		64
@@ -19,17 +20,21 @@
 class TDMap : public TDObject{
 private:
 	int _nRow, _nCol;
-	bool _bAvailable[MAP_NUM_ROW][MAP_NUM_COL];
+	
+	std::vector<TDObject*>* _pObjectList;
+	TDObject* _pDummyObject; // used for marking unavailable tile
 
 public:
 	TDMap();
+	~TDMap();
 
 	void setPortalAndMonster(D3DXVECTOR3 vPortal, D3DXVECTOR3 vMonster);
-	void setAvailable(int row, int col);
+	void setAvailable(int row, int col, TDObject* pObject);
 
 	bool isAvailableTile(int row, int col) const;
 	int getRow() const;
 	int getCol() const;
+	TDObject* getObjectOn(int row, int col);
 };
 
 #endif

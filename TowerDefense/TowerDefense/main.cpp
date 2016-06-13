@@ -26,7 +26,7 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
-		TowerDefense::getInstance()->handlePicking(LOWORD(lParam), HIWORD(lParam));
+		TowerDefense::getInstance()->handleMouseClick();
 		return 0;
 	case WM_RBUTTONDOWN:
 		TowerDefense::getInstance()->SetRButton(true, LOWORD(lParam));

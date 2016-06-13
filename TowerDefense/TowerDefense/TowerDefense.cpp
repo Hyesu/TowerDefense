@@ -109,7 +109,7 @@ VOID TowerDefense::Render() {
 // init direct3D and Game objects
 HRESULT TowerDefense::SetUp() {
 	// for random number
-	srand(time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	if (FAILED(initIndexBuffer())) {
 		MessageBox(0, L"InitIndexBuffer Failed", 0, 0);
@@ -225,11 +225,16 @@ VOID TowerDefense::initViewSpace(D3DXVECTOR3 vCameraPosition) {
 	_pd3dDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
 }
 VOID TowerDefense::initTDObjects() {
+	// init map
 	_pMap = new TDMap();
 
+
+	// init portal
 	D3DXVECTOR3 mapPosition = _pMap->getPosition();
 	_pPortal = new TDPortal(mapPosition.x, mapPosition.y, mapPosition.z);
 
+
+	// init monster
 	_pMonsterList = new std::list<TDMonster*>();
 	createMonster();
 	_pMap->setPortalAndMonster(_pPortal->getPosition(), ((TDMonster*) (*_pMonsterList->begin()))->getPosition());
@@ -351,14 +356,18 @@ bool TowerDefense::GetRButton() const {
 
 
 // create game objects 
-VOID TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
+TDTower* TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
 	if(_pTowerList->empty())
 		SetTimer(_pWindow, TD_MISSILE_TIMER_ID, TD_MISSILE_INTERVAL, nullptr);
 
+	TDTower* newTower = nullptr;
 	if (bAirTower)
-		_pTowerList->push_back(new TDAirTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition()));
+		newTower = new TDAirTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
 	else
-		_pTowerList->push_back(new TDTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition()));
+		newTower = new TDTower(vMapPosition, _pMap->getPosition(), _pMap->getEndPosition());
+
+	_pTowerList->push_back(newTower);
+	return newTower;
 
 }
 VOID TowerDefense::createMissile() {
@@ -392,63 +401,7 @@ VOID TowerDefense::createMonster() {
 }
 
 
-// mouse left-button click handle
-VOID TowerDefense::handlePicking(int nScreenX, int nScreenY) {
-	Ray ray = getPickingRay(nScreenX, nScreenY);
-	transformRayToWorld(&ray);
-
-	// check tower click
-	for (int i = 0; i < _pTowerList->size(); i++) {
-		TDTower* tower = _pTowerList->at(i);
-		if (D3DXBoxBoundProbe(&tower->getPosition(), &tower->getEndPosition(), &ray._vOrigin, &ray._vDirection))
-			tower->changeMissileDirection();
-	}
-
-	// check tile click
-	D3DXVECTOR3 mapPosition = _pMap->getPosition();
-	for (int i = 0; i < _pMap->getRow(); i++) {
-		for (int j = 0; j < _pMap->getCol(); j++) {
-			D3DXVECTOR3 lowerBound = mapPosition + D3DXVECTOR3(1.0f * j, 0.0f, 1.0f * i);
-			D3DXVECTOR3 upperBound = mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1));
-
-			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
-				if (_pMap->isAvailableTile(i, j)) {
-					createTower(lowerBound, GetAsyncKeyState(VK_LSHIFT) & 0x8000);
-					_pMap->setAvailable(i, j);
-					return;
-				}
-			}
-		}
-	}	
-}
-TowerDefense::Ray TowerDefense::getPickingRay(int nScreenX, int nScreenY) {
-	D3DVIEWPORT9 viewport;
-	_pd3dDevice->GetViewport(&viewport);
-
-	D3DXMATRIX projection;
-	_pd3dDevice->GetTransform(D3DTS_PROJECTION, &projection);
-
-	float px = (((2.0f * nScreenX) / viewport.Width) - 1.0f) / projection(0, 0);
-	float py = (((-2.0f * nScreenY) / viewport.Height) + 1.0f) / projection(1, 1);
-	
-	return Ray(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(px, py, 1.0f));
-}
-TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
-	// get inverse of view matrix
-	D3DXMATRIX view;
-	_pd3dDevice->GetTransform(D3DTS_VIEW, &view);
-	D3DXMATRIX viewInverse;
-	D3DXMatrixInverse(&viewInverse, 0, &view);
-
-	// transform ray from view space to world space
-	D3DXVec3TransformCoord(&ray->_vOrigin, &ray->_vOrigin, &viewInverse);
-	D3DXVec3TransformNormal(&ray->_vDirection, &ray->_vDirection, &viewInverse);
-
-	return Ray(ray->_vOrigin, ray->_vDirection);
-}
-
-
-// etc event handler
+// event handler functions
 VOID TowerDefense::handleGameOver() {
 	MessageBox(0, L"GAME OVER!", L"GAME OVER", 0);
 	DestroyWindow(_pWindow);
@@ -466,7 +419,6 @@ VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 	Ray ray = getPickingRay(nScreenX, nScreenY);
 	transformRayToWorld(&ray);
 
-	// check tile
 	D3DXVECTOR3 mapPosition = _pMap->getPosition();
 	for (int i = 0; i < _pMap->getRow(); i++) {
 		for (int j = 0; j < _pMap->getCol(); j++) {
@@ -476,17 +428,57 @@ VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
 				_pTile->setVisible(true);
 				_pTile->setPosition(D3DXVECTOR3(lowerBound.x, upperBound.y, lowerBound.z));
-/*
-				if (_pMap->isAvailableTile(i, j)) {
-					_pTile->setVisible(true);
-					_pTile->setPosition(D3DXVECTOR3(lowerBound.x, upperBound.y, lowerBound.z));
-				}
-				else {
-					_pTile->setVisible(false);
-				}*/
+				_nMouseRow = i;
+				_nMouseCol = j;
+
 				return;
 			}
 		}
 	}
 	_pTile->setVisible(false);
+	_nMouseRow = -1;
+	_nMouseCol = -1;
+}
+VOID TowerDefense::handleMouseClick() {
+	if (_nMouseRow < 0 || _nMouseCol < 0) return;
+
+	if (_pMap->isAvailableTile(_nMouseRow, _nMouseCol)) {
+		// click empty tile case
+		D3DXVECTOR3 clickedTilePosition = _pMap->getPosition() + D3DXVECTOR3(1.0 * _nMouseCol, 0.0f, 1.0f * _nMouseRow);
+		_pMap->setAvailable(_nMouseRow, _nMouseCol, 
+			createTower(clickedTilePosition, static_cast<bool>(GetAsyncKeyState(VK_LSHIFT) & 0x8000)));
+	}
+	else {
+		// click tower case
+		TDTower* clickedTower = (TDTower*)(_pMap->getObjectOn(_nMouseRow, _nMouseCol));
+		clickedTower->changeMissileDirection();
+	}
+}
+
+
+// functions for picking
+TowerDefense::Ray TowerDefense::getPickingRay(int nScreenX, int nScreenY) {
+	D3DVIEWPORT9 viewport;
+	_pd3dDevice->GetViewport(&viewport);
+
+	D3DXMATRIX projection;
+	_pd3dDevice->GetTransform(D3DTS_PROJECTION, &projection);
+
+	float px = (((2.0f * nScreenX) / viewport.Width) - 1.0f) / projection(0, 0);
+	float py = (((-2.0f * nScreenY) / viewport.Height) + 1.0f) / projection(1, 1);
+
+	return Ray(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(px, py, 1.0f));
+}
+TowerDefense::Ray TowerDefense::transformRayToWorld(Ray* ray) {
+	// get inverse of view matrix
+	D3DXMATRIX view;
+	_pd3dDevice->GetTransform(D3DTS_VIEW, &view);
+	D3DXMATRIX viewInverse;
+	D3DXMatrixInverse(&viewInverse, 0, &view);
+
+	// transform ray from view space to world space
+	D3DXVec3TransformCoord(&ray->_vOrigin, &ray->_vOrigin, &viewInverse);
+	D3DXVec3TransformNormal(&ray->_vDirection, &ray->_vDirection, &viewInverse);
+
+	return Ray(ray->_vOrigin, ray->_vDirection);
 }
