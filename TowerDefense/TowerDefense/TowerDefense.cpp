@@ -337,7 +337,7 @@ VOID TowerDefense::drawTowerDefense() {
 	}
 
 	// draw tower and missiles
-	for (int i = 0; i < _pTowerList->size(); i++) {
+	for (unsigned int i = 0; i < _pTowerList->size(); i++) {
 		TDTower* tower = _pTowerList->at(i);
 
 		drawObject(tower);
@@ -499,7 +499,7 @@ TDTower* TowerDefense::createTower(D3DXVECTOR3 vMapPosition, bool bAirTower) {
 		Create missile for each tower in tower list
 */
 VOID TowerDefense::createMissile() {
-	for (int i = 0; i < _pTowerList->size(); i++)
+	for (unsigned int i = 0; i < _pTowerList->size(); i++)
 		_pTowerList->at(i)->createMissile();
 }
 /**
@@ -511,7 +511,7 @@ VOID TowerDefense::createMissile() {
 VOID TowerDefense::createMonster() {
 	if (_pMap == nullptr || _pPortal == nullptr || _pMonsterList == nullptr) return;
 
-	int nMonsterType = rand() % MONSTER_NUM_TYPE;
+	unsigned int nMonsterType = rand() % MONSTER_NUM_TYPE;
 
 	D3DXVECTOR3 mapPosition = _pMap->getEndPosition();
 	s_nMonsterCreate++;
@@ -579,10 +579,10 @@ VOID TowerDefense::handleMouseHover(int nScreenX, int nScreenY) {
 	transformRayToWorld(&ray);
 
 	D3DXVECTOR3 mapPosition = _pMap->getPosition();
-	for (int i = 0; i < _pMap->getRow(); i++) {
-		for (int j = 0; j < _pMap->getCol(); j++) {
-			D3DXVECTOR3 lowerBound = mapPosition + D3DXVECTOR3(1.0f * j, 0.0f, 1.0f * i);
-			D3DXVECTOR3 upperBound = mapPosition + D3DXVECTOR3(1.0f * (j + 1), 1.0f, 1.0f * (i + 1));
+	for (unsigned int i = 0; i < _pMap->getRow(); i++) {
+		for (unsigned int j = 0; j < _pMap->getCol(); j++) {
+			D3DXVECTOR3 lowerBound = mapPosition + D3DXVECTOR3(OBJECT_DEFAULT_LENGTH * j, 0.0f, OBJECT_DEFAULT_LENGTH * i);
+			D3DXVECTOR3 upperBound = mapPosition + D3DXVECTOR3(OBJECT_DEFAULT_LENGTH * (j + 1), OBJECT_DEFAULT_LENGTH, OBJECT_DEFAULT_LENGTH * (i + 1));
 
 			if (D3DXBoxBoundProbe(&lowerBound, &upperBound, &ray._vOrigin, &ray._vDirection)) {
 				_pTile->setVisible(true);
@@ -615,7 +615,7 @@ VOID TowerDefense::handleMouseClick() {
 
 	if (_pMap->isAvailableTile(_nMouseRow, _nMouseCol)) {
 		// click empty tile case
-		D3DXVECTOR3 clickedTilePosition = _pMap->getPosition() + D3DXVECTOR3(1.0f * _nMouseCol, 0.0f, 1.0f * _nMouseRow);
+		D3DXVECTOR3 clickedTilePosition = _pMap->getPosition() + D3DXVECTOR3(OBJECT_DEFAULT_LENGTH * _nMouseCol, 0.0f, OBJECT_DEFAULT_LENGTH * _nMouseRow);
 		_pMap->setAvailable(_nMouseRow, _nMouseCol, 
 			createTower(clickedTilePosition, GetAsyncKeyState(VK_LSHIFT) & 0x8000 ? true : false));
 	}

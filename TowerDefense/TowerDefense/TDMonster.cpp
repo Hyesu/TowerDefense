@@ -1,5 +1,22 @@
+/**
+	File: TDMonster.cpp
+		Define functions of TDMonster class.
+
+	Shin Hyesu, 2016.06
+*/
+
 #include "TDMonster.h"
 
+/**
+	Function: TDMonster
+		Constructor of TDMonster class.
+		Init position of monster.
+
+	Params:
+		fPosMapEndX		float value for x-position of monster
+		fPosMapEndY		float value for y-position of monster
+		fPosMapEndZ		float value for z-position of monster
+*/
 TDMonster::TDMonster(float fPosMapEndX, float fPosMapEndY, float fPosMapEndZ) 
 	: TDObject(MONSTER_LENGTH_X, MONSTER_LENGTH_Y, MONSTER_LENGTH_Z, MONSTER_COLOR_RED, MONSTER_COLOR_GREEN, MONSTER_COLOR_BLUE) {
 	D3DXVECTOR3 monsterPos = D3DXVECTOR3(fPosMapEndX - MONSTER_LENGTH_X, fPosMapEndY, fPosMapEndZ - MONSTER_LENGTH_Z);
@@ -8,10 +25,22 @@ TDMonster::TDMonster(float fPosMapEndX, float fPosMapEndY, float fPosMapEndZ)
 
 	_nType = TYPE_MONSTER;
 }
+
+/**
+	Function: setPortalPosition
+		Setter for portal position used to monster moving target.
+
+	Params:
+		vPortal 	position of portal(x, y, z)
+*/
 void TDMonster::setPortalPosition(D3DXVECTOR3 vPortal) {
 	_vPortalPosition = vPortal;
 }
 
+/**
+	Function: moveToPortal
+		move monster to portal.
+*/
 void TDMonster::moveToPortal() {
 	float fDeltaX, fDeltaZ;
 	fDeltaX = fDeltaZ = 0;

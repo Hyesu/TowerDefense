@@ -1,7 +1,7 @@
 /**
 	File: TDTower.cpp
 		Init static variables of TDTower class.
-		Define functions of Tower class.
+		Define functions of TDTower class.
 
 	Shin Hyesu, 2016.06
 */

@@ -1,3 +1,10 @@
+/**
+	File: TDPortal.h
+		Define constants for portal.
+
+	Shin Hyesu, 2016.06
+*/
+
 #ifndef __TD_PORTAL_H__
 #define __TD_PORTAL_H__
 
@@ -15,6 +22,12 @@
 #define PORTAL_LENGTH_Y			3.0f
 #define PORTAL_LENGTH_Z			1.0f
 
+
+/**
+	Class: TDPortal
+		Represent a "Portal" in tower defense game.
+		Inherit TDObject.
+*/
 class TDPortal : public TDObject {
 public:
 	TDPortal(float fMapPosX = PORTAL_DEFAULT_POS_X, float fMapPosY = PORTAL_DEFAULT_POS_Y, float fMapPosZ = PORTAL_DEFAULT_POS_Z);

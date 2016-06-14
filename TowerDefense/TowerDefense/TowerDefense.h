@@ -34,8 +34,8 @@
 #define TD_WINDOW_WIDTH			900
 #define TD_WINDOW_HEIGHT		900
 
-#define TD_NUM_VERTICES			8	// cube vertices
-#define TD_NUM_INDICES			36	// cube indices
+#define TD_NUM_VERTICES			8	// the number of cube vertices
+#define TD_NUM_INDICES			36	// the number cube indices
 
 #define TD_CAMERA_POSITION		D3DXVECTOR3(0.0f, 15.0f, -15.0f)
 #define TD_TARGET_POSITION		D3DXVECTOR3(0.0f, 0.0f,  0.0f)
@@ -65,6 +65,7 @@
 	Class: TowerDefense
 		Handle display device using Direct3D API.
 		Manage game logic using TDObjects(game data).
+		Singleton class.
 */
 class TowerDefense
 {
@@ -72,8 +73,8 @@ private:
 	static TowerDefense*	_pInstance;
 
 	// Direct3D variables
-	LPDIRECT3D9				_pD3D;			// Used to create the D3DDevice
-	LPDIRECT3DDEVICE9		_pd3dDevice;	// Our rendering device
+	LPDIRECT3D9				_pD3D;				// Used to create the D3DDevice
+	LPDIRECT3DDEVICE9		_pd3dDevice;		// Our rendering device
 	IDirect3DVertexBuffer9* _pVertexBuffer;
 	IDirect3DIndexBuffer9*  _pIndexBuffer;
 	float					_fCameraAngle;
@@ -87,7 +88,7 @@ private:
 	TDTile*					_pTile;
 	int						_nMouseRow, _nMouseCol;
 
-	static int s_nMonsterCreate;
+	static int s_nMonsterCreate;				// count for creating monster
 
 
 	// Window Variables
