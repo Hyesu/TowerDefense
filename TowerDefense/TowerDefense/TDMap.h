@@ -34,7 +34,7 @@
 */
 class TDMap : public TDObject{
 private:
-	int _nRow, _nCol;	// the number of row and column for map
+	unsigned int _nRow, _nCol;				// the number of row and column for map
 	
 	std::vector<TDObject*>* _pObjectList;	// used for handling the data of TDObject which is on the map
 	TDObject* 				_pDummyObject; 	// used for marking unavailable tile
@@ -49,8 +49,8 @@ public:
 
 	// getter
 	bool isAvailableTile(int row, int col) const;
-	int getRow() const;
-	int getCol() const;
+	unsigned int getRow() const;
+	unsigned int getCol() const;
 	TDObject* getObjectOn(int row, int col);
 };
 

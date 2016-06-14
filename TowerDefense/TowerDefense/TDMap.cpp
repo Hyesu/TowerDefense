@@ -102,7 +102,7 @@ bool TDMap::isAvailableTile(int row, int col) const {
 	Return:
 		integer value for the number of row
 */
-int TDMap::getRow() const {
+unsigned int TDMap::getRow() const {
 	return _nRow;
 }
 /**
@@ -112,7 +112,7 @@ int TDMap::getRow() const {
 	Return:
 		integer value for the number of column
 */
-int TDMap::getCol() const {
+unsigned int TDMap::getCol() const {
 	return _nCol;
 }
 /**
