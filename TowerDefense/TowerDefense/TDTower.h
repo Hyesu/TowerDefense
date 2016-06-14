@@ -1,3 +1,10 @@
+/**
+	File: TDTower.h
+		Define constants for building tower.
+
+	Shin Hyesu, 2016.06
+*/
+
 #ifndef __TD_TOWER_H__
 #define __TD_TOWER_H__
 
@@ -18,6 +25,13 @@
 #define TOWER_BOUNDARY		3.0f
 
 
+
+/**
+	Class: TDTower
+		Represent a "Tower" in tower defense game.
+		Create and manage missiles. Check collision between missiles and other objects.
+		Inherit TDObject.
+*/
 class TDTower : public TDObject {
 private:
 	std::list<TDMissile*>* _pMissileList;
